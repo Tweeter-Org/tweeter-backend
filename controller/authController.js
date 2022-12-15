@@ -73,14 +73,30 @@ const signup = async (req,res)=>{
                 const encryptedPassword = await bcrypt.hash(password, 12);
 
                 // Create new otp of user in database
-                
-                const user = await Otp.create({ 
+
+                const oldotp = await Otp.update({
                     user_name,
                     email:email.toLowerCase(),
                     password:encryptedPassword,
                     otp : mailedOTP.toString(),
                     expiry : expiresat
+                },
+                {
+                    where:{
+                        email
+                    }
                 });
+                
+                console.log(oldotp)
+                if(oldotp[0]==0){
+                    const user = await Otp.create({ 
+                        user_name,
+                        email:email.toLowerCase(),
+                        password:encryptedPassword,
+                        otp : mailedOTP.toString(),
+                        expiry : expiresat
+                    });
+                }
                 
 
                 return res.status(201).json({sucess:true,msg:`Welcome to spaces! ${user_name}. Check your mail`});

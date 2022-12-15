@@ -24,7 +24,7 @@ app.use(express.json());
 
 const connectdb = async ()=>{
     try {
-        const result = await sequelize.sync({force:true});
+        const result = await sequelize.sync();
         console.log('DB Connection has been established successfully.');
         app.listen(process.env.PORT);
         console.log(`Listening on port ${process.env.PORT}`);

@@ -41,7 +41,7 @@ const signup = async (req,res)=>{
         });
 
         if(oldMail){
-            return res.status(400).json({success:false,msg:'email already exists'})
+            return res.status(400).json({success:false,msg:'User by this email already exists'})
         }
 
         const oldUser = await User.findOne({
@@ -87,7 +87,6 @@ const signup = async (req,res)=>{
                     }
                 });
                 
-                console.log(oldotp)
                 if(oldotp[0]==0){
                     const user = await Otp.create({ 
                         user_name,
@@ -99,7 +98,7 @@ const signup = async (req,res)=>{
                 }
                 
 
-                return res.status(201).json({sucess:true,msg:`Welcome to spaces! ${user_name}. Check your mail`});
+                return res.status(201).json({sucess:true,msg:`Welcome to twitter! ${user_name}. Check your mail`});
             }else{
                 console.log('mail not sent.');
                 return res.status(500).json({success:false,msg:"Error while sending mail."});
@@ -219,21 +218,157 @@ const forgotpwd = async (req,res) => {
             console.log('mail sent.');
             const expiresat = Date.now() + 300000;
 
-            const sendotp = await Otp.create({ 
+            const oldotp = await Otp.update({
+                otp : mailedOTP.toString(),
+                expiry : expiresat
+            },
+            {
+                where:{
+                    email
+                }
+            });
+
+
+            if(oldotp[0]==0){
+                await Otp.create({ 
+                    user_name:user.user_name,
+                    email:email.toLowerCase(),
+                    password:user.password,
+                    otp : mailedOTP.toString(),
+                    expiry : expiresat
+                });
+            }
+
+            return res.status(200).json({sucess: true, msg:'OTP sent'});
+
+        } else{
+            return res.status(500).json({sucess: false, msg:'OTP not sent'});
+        }
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const fverify = async (req,res) => {
+    try {
+        const {email,otp} = req.body;
+
+        if (!otp) {
+            return res.status(400).json({sucess:false,msg:"Input is required"});
+         }
+ 
+         const user = await Otp.findOne({
+             where:{
+                 email:email.toLowerCase()
+             }
+         });
+     
+         if(!user) return res.status(404).json({success:false,msg:'user not found by the given mail'});
+
+        const token=jwt.sign({user_name:user.user_name},process.env.jwtsecretkey1,{expiresIn:"2d"});
+
+        if(user.otp == otp && user.expiry > Date.now()){
+
+            
+            await Otp.destroy({
+                where:{
+                    email:user.email
+                }
+            });
+            
+
+            return res.status(200).json({success:true,msg:`OTP Verified!`,token:token});
+
+        }else if(user.otp == otp && user.expiry <= Date.now()){
+            return res.status(400).json({success:false, msg:'This OTP has expired'});
+        }
+        else{
+            return res.status(400).json({success:false, msg:'Wrong OTP entered.'});
+        }
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const resetpass = async(req,res) => {
+    try {
+        const {password} = req.body;
+        const user = req.user;
+
+        const encryptedPassword = await bcrypt.hash(password, 12);
+
+        const updatepass = User.update({
+            password:encryptedPassword
+        },{
+            where:{
+                email:user.email
+            }
+        });
+        
+        if(updatepass[0]!=0){
+            return res.status(200).json({sucess:true,msg:"Successfully reset password."});
+        }else{
+            return res.status(404).json({sucess:false,msg:"User not found."});
+        }
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const resendotp = async (req,res) => {
+    try {
+        const {email} = req.body;
+
+        if (!email) {
+            return res.status(400).send("Input is required");
+        }
+
+        const user = await User.findOne({where:{email}});
+
+        if(!user)
+            return res.status(404).json({success:false,msg:"User not found"});
+
+        const mailedOTP = otpGenerator.generate(6, {
+            upperCaseAlphabets: false,
+            specialChars: false,
+            lowerCaseAlphabets: false
+        });
+
+        const result = mailer.sendmail(email,mailedOTP);
+
+        if(!result)
+            return res.status(500).json({sucess:false,msg:"error in sending mail"});
+
+        console.log('mail sent.');
+        const expiresat = Date.now() + 300000;
+
+        const oldotp = await Otp.update({
+            otp : mailedOTP.toString(),
+            expiry : expiresat
+        },
+        {
+            where:{
+                email
+            }
+        });
+
+        if(oldotp[0]==0){
+            const user = await Otp.create({
                 user_name:user.user_name,
                 email:email.toLowerCase(),
                 password:user.password,
                 otp : mailedOTP.toString(),
                 expiry : expiresat
             });
-            
-            if(sendotp)
-                return res.status(200).json({sucess: true, msg:'OTP sent'});
-            else
-            return res.status(500).json({sucess: false, msg:'OTP not sent'});
-        } else{
-            return res.status(500).json({sucess: false, msg:'OTP not sent'});
         }
+
+        return res.send(200).json({success:true,msg:"Otp sent to mail"});
 
     } catch (err) {
         console.log(err);
@@ -246,5 +381,8 @@ module.exports = {
     signup,
     sverify,
     login,
-    forgotpwd
+    forgotpwd,
+    fverify,
+    resetpass,
+    resendotp
 }

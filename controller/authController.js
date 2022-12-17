@@ -116,7 +116,7 @@ const login = async (req, res) => {
 
         // validation for email and password inputs
         if (!(email && password)) {
-            res.status(400).json({sucess:false,msg:"All inputs are required"});
+            return res.status(400).json({sucess:false,msg:"All inputs are required"});
         }
 
         const user = await User.findOne({
@@ -147,7 +147,7 @@ const sverify = async (req,res) => {
         const {email,otp} = req.body;
 
         if (!otp) {
-            res.status(400).json({sucess:false,msg:"Input is required"});
+           return res.status(400).json({sucess:false,msg:"Input is required"});
         }
 
         const user = await Otp.findOne({
@@ -156,7 +156,7 @@ const sverify = async (req,res) => {
             }
         });
     
-        if(!user) return res.status(400).json({success:false,msg:'user not found by the given mail'});
+        if(!user) return res.status(404).json({success:false,msg:'user not found by the given mail'});
 
         const token=jwt.sign({user_name:user.user_name},process.env.jwtsecretkey1,{expiresIn:"2d"});
 
@@ -191,9 +191,60 @@ const sverify = async (req,res) => {
     }
 }
 
+const forgotpwd = async (req,res) => {
+    try {
+        const {email}=req.body;
+
+        if (!email) {
+            return res.status(400).send("Input is required");
+        }
+
+        const user = await User.findOne({where:{email:email.toLowerCase()}});
+
+        if (!user) return res.status(404)
+        .json({sucess:false,msg:"This email doesn't have an account"});
+
+        
+
+        const mailedOTP = otpGenerator.generate(6, {
+            upperCaseAlphabets: false,
+            specialChars: false,
+            lowerCaseAlphabets: false
+        });
+
+
+        const result = mailer.sendmail(email,mailedOTP);
+
+        if(result){
+            console.log('mail sent.');
+            const expiresat = Date.now() + 300000;
+
+            const sendotp = await Otp.create({ 
+                user_name:user.user_name,
+                email:email.toLowerCase(),
+                password:user.password,
+                otp : mailedOTP.toString(),
+                expiry : expiresat
+            });
+            
+            if(sendotp)
+                return res.status(200).json({sucess: true, msg:'OTP sent'});
+            else
+            return res.status(500).json({sucess: false, msg:'OTP not sent'});
+        } else{
+            return res.status(500).json({sucess: false, msg:'OTP not sent'});
+        }
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     home,
     signup,
     sverify,
-    login
+    login,
+    forgotpwd
 }

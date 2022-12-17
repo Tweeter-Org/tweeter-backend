@@ -195,7 +195,7 @@ const forgotpwd = async (req,res) => {
         const {email}=req.body;
 
         if (!email) {
-            return res.status(400).send("Input is required");
+            return res.status(400).json({success:false,msg:"Input is required"});
         }
 
         const user = await User.findOne({where:{email:email.toLowerCase()}});
@@ -326,13 +326,13 @@ const resendotp = async (req,res) => {
         const {email} = req.body;
 
         if (!email) {
-            return res.status(400).send("Input is required");
+            return res.status(400).json({success:false,msg:"Input is required"});
         }
 
         const user = await User.findOne({where:{email}});
 
         if(!user)
-            return res.status(404).json({success:false,msg:"User not found"});
+            return res.status(404).json({success:false,msg:"User not found by mail"});
 
         const mailedOTP = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
@@ -358,17 +358,10 @@ const resendotp = async (req,res) => {
             }
         });
 
-        if(oldotp[0]==0){
-            const user = await Otp.create({
-                user_name:user.user_name,
-                email:email.toLowerCase(),
-                password:user.password,
-                otp : mailedOTP.toString(),
-                expiry : expiresat
-            });
-        }
-
-        return res.send(200).json({success:true,msg:"Otp sent to mail"});
+        if(oldotp[0]!=0)
+            return res.status(200).json({success:true,msg:"Otp sent to mail"});
+        else
+            return res.status(500).json({sucess: false, msg:'Sign up again'});
 
     } catch (err) {
         console.log(err);

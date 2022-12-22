@@ -425,6 +425,7 @@ const resendotp = async (req,res) => {
         if(oldotp[0]==0){
             await Otp.create({
                 otp : mailedOTP,
+                email,
                 expiry : expiresat
             })
         }

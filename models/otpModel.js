@@ -15,18 +15,10 @@ const Otp = sequelize.define('otp',{
   expiry:{
     type: Sequelize.BIGINT
   },
-  user_name:{
-    type: Sequelize.STRING,
-    allowNull: false
-  },
   email: {
     type: Sequelize.STRING,
     allowNull: false
-  },
-  password:{
-    type: Sequelize.STRING
   }
 });
-
 
 module.exports= Otp;

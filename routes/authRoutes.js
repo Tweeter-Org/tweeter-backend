@@ -5,9 +5,12 @@ const validation = require('../middleware/authveriftoken');
 const authverifytoken = require('../middleware/authveriftoken');
 
 
-router.post('/signup', authController.signup);
-router.post('/signup/verify',authController.sverify);
+router.post('/email',authController.email);
+router.post('/email/verify',authController.everify);
+router.post('/signup',authverifytoken,authController.signup);
+
 router.post('/login', authController.login);
+
 router.post('/forgotpwd',authController.forgotpwd);
 router.post('/forgotpwd/verify',authController.fverify);
 router.post('/resetpassword',authverifytoken,authController.resetpass);

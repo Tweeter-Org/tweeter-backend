@@ -8,21 +8,28 @@ const User = sequelize.define('user', {
         allowNull: false,
         primaryKey: true
     },
+    name:{
+        type: Sequelize.STRING
+    },
     user_name: {
         type: Sequelize.STRING,
-        allowNull: false
+        defaultValue: null
     },
     email:{
         type: Sequelize.STRING,
         allowNull: false
     },
-    password: { 
+    password: {
         type: Sequelize.STRING,
-        allowNull: false
+        defaultValue: null
     },
     displaypic:{
         type: Sequelize.STRING,
         defaultValue: null
+    },
+    isSignedup:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     }
 });
 

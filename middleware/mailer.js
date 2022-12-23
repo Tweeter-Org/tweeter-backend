@@ -4,13 +4,13 @@ const sendmail = async (email,otp) => {
     const msg = {
         from: "spaces.inc.si@gmail.com",
         to: email,
-        subject: `OTP from Chatter Inc.`,
+        subject: `OTP from Tweeter Inc.`,
         html: `
         <div
           class="container"
           style="max-width: 90%; margin: auto; padding-top: 20px"
         >
-          <center><h2>Welcome to Chatter!</h2></center>
+          <center><h2>Welcome to Tweeter!</h2></center>
           <h3>We are glad to have you.</h3>
           <h4>You are About to be a Member </h4>
           <p style="margin-bottom: 30px;">Please enter this sign up OTP to get started</p>

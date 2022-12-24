@@ -49,7 +49,26 @@ const create = async (req,res) => {
 
 const feed = async (req,res) => {
     try {
-        
+
+        const page = req.query.page | 0;
+        const tweets = await Tweet.findAll({
+            attributes:['_id','text','image','video'],
+            order:[
+                ['createdAt','DESC']
+            ],
+            offset:page*15,
+            limit:15,
+            include:{
+                model:User,
+                attributes:['user_name','displaypic']
+            }
+        });
+
+        if(tweets)
+            return res.status(200).json({success:true,tweets});
+        else
+            return res.status(500).json({success:false,msg:"Internal Server Error"});
+    
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -57,5 +76,6 @@ const feed = async (req,res) => {
 }
 
 module.exports = {
-    create
+    create,
+    feed
 }

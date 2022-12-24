@@ -19,7 +19,11 @@ const Tweet = sequelize.define('tweet',{
     video:{
         type: Sequelize.STRING,
         defaultValue: null
-    }
+    },
+    // likes:{
+    //     type: Sequelize.BIGINT,
+    //     defaultValue: 0
+    // }
 });
 
 module.exports = Tweet;

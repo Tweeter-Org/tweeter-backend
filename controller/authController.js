@@ -118,6 +118,11 @@ const signup = async (req,res)=>{
         if (!(user_name && password && name)) {
           return res.status(400).json({sucess:false,msg:"All inputs are required"});
         }
+
+        if(!regexval.validateusername(user_name)){
+            return res.status(400).json({sucess:false,msg:"Incorrect Username Format"});
+        }
+
         if(!regexval.validatepass(password)){
           return res.status(400).json({sucess:false,msg:"Incorrect Password Format"});
         }
@@ -156,7 +161,7 @@ const login = async (req, res) => {
         if (!(email && password)) {
             return res.status(400).json({sucess:false,msg:"All inputs are required"});
         }
-        const user = await User.findOne({
+        let user = await User.findOne({
             where:{
                 email:email.toLowerCase()
             }
@@ -168,7 +173,8 @@ const login = async (req, res) => {
         if (!result) return res.status(400).json({sucess:false,msg:"Wrong Password"});
 
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return res.status(200).json({sucess: true,msg:`Welcome back! ${user.user_name}`,token});
+        user = {name:user.name,user_name:user.user_name,displaypic:user.displaypic};
+        return res.status(200).json({sucess: true,msg:`Welcome back! ${user.user_name}`,token,user});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

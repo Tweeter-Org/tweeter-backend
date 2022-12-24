@@ -10,7 +10,14 @@ function validatemail(email){
     return result;
 }
 
+function validateusername(user_name){
+    let userformat = /^[a-zA-Z0-9.\-_$@*!]{3,30}$/;
+    result = mailformat.test(user_name);
+    return result;
+}
+
 module.exports = {
     validatepass,
-    validatemail
+    validatemail,
+    validateusername
 }

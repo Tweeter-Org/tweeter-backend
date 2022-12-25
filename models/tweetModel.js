@@ -20,10 +20,10 @@ const Tweet = sequelize.define('tweet',{
         type: Sequelize.STRING,
         defaultValue: null
     },
-    // likes:{
-    //     type: Sequelize.BIGINT,
-    //     defaultValue: 0
-    // }
+    likes:{
+        type: Sequelize.BIGINT,
+        defaultValue: 0
+    }
 });
 
 module.exports = Tweet;

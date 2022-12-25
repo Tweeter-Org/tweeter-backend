@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const mailer = require("../middleware/mailer");
 const User = require('../models/userModel');
 const Otp = require('../models/otpModel');
+const { Op } = require('sequelize');
 const regexval = require("../middleware/validate");
 require('dotenv').config();
 
@@ -341,6 +342,34 @@ const resendotp = async (req,res) => {
     }
 }
 
+const search = async (req,res) => {
+    try {
+        const text = req.query.find;
+        const users = await User.findAll({
+            where:{
+                [Op.or]:[
+                {
+                    user_name:{
+                        [Op.iLike]: `%${text}%`
+                    }
+                },
+                {
+                    name:{
+                        [Op.iLike]: `%${text}%`
+                    }
+                }
+                ]
+            },
+            attributes:['name','user_name'],
+            limit:10
+        })
+        res.status(200).json({success:true,result:users});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 
 module.exports = {
     home,
@@ -351,5 +380,6 @@ module.exports = {
     forgotpwd,
     fverify,
     resetpass,
-    resendotp
+    resendotp,
+    search
 }

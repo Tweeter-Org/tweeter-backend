@@ -1,6 +1,7 @@
 const { rmSync } = require('fs');
 const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
+const { Op } = require('sequelize');
 const fs = require('fs');
 
 const create = async (req,res) => {
@@ -75,7 +76,18 @@ const feed = async (req,res) => {
     }                                                
 }
 
+const likepost = async (req,res) =>{
+    try {
+        const user = req.user;
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     create,
-    feed
+    feed,
+    likepost
 }

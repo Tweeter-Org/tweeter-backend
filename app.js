@@ -5,6 +5,7 @@ const tweetRoutes = require('./routes/tweetRoutes');
 const User = require('./models/userModel');
 const Tweet = require('./models/tweetModel');
 const Otp = require('./models/otpModel');
+const {getGoogleAuthURL,googleAuth} = require('./utils/google');
 const fs = require('fs');
 if (!fs.existsSync('./uploads'))
   fs.mkdirSync('./uploads');
@@ -34,4 +35,19 @@ app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
 
 app.use('/t',tweetRoutes);
+app.get('/auth/google/url',(req,res)=>{
+    return res.send(getGoogleAuthURL());
+});
+app.get('/auth/google',async (req,res)=>{
+  try{
+    const code = req.query.code;
+    const result = await googleAuth(code);
+    if(result.success == true)
+      res.status(200).json(result);
+  }catch(err){
+    console.log(err);
+    const statusCode = 500;
+    res.status(statusCode).json({success:false,msg:err});
+  }
+});
 app.use(authRoutes);

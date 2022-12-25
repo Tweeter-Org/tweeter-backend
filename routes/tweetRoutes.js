@@ -6,5 +6,6 @@ const authverifytoken = require('../middleware/authveriftoken');
 
 router.post('/create',authverifytoken,Upload.uploadfile.single('file'),tweetController.create);
 router.get('/feed',authverifytoken,tweetController.feed);
+router.post('/like',authverifytoken,tweetController.likepost);
 
 module.exports = router;

@@ -35,9 +35,11 @@ app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
 
 app.use('/t',tweetRoutes);
+
 app.get('/auth/google/url',(req,res)=>{
     return res.send(getGoogleAuthURL());
 });
+
 app.get('/auth/google',async (req,res)=>{
   try{
     const code = req.query.code;
@@ -50,4 +52,5 @@ app.get('/auth/google',async (req,res)=>{
     res.status(statusCode).json({success:false,msg:err});
   }
 });
+
 app.use(authRoutes);

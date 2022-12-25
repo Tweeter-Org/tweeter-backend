@@ -16,7 +16,7 @@ const create = async (req,res) => {
         if(req.file !== undefined){
             filepath = 'uploads/' + req.file.filename;
         }
-        if(req.file.mimetype === 'video/mp4'){
+        if(req.file!==undefined&&req.file.mimetype === 'video/mp4'){
             video = filepath
         }else{
             image = filepath

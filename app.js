@@ -49,11 +49,11 @@ app.get('/auth/google',async (req,res)=>{
     const code = req.query.code;
     const result = await googleAuth(code);
     if(result.success == true)
-      res.status(200).json(result);
+      return res.status(200).json(result);
   }catch(err){
     console.log(err);
     const statusCode = 500;
-    res.status(statusCode).json({success:false,msg:err});
+    return res.status(statusCode).json({success:false,msg:err});
   }
 });
 

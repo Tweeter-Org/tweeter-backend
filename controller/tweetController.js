@@ -79,16 +79,27 @@ const feed = async (req,res) => {
 
 const likepost = async (req,res) =>{
     try {
-        const {id} = req.body;
+        const {tweetId} = req.body;
         const user = req.user;
 
-        const like = await Likes.create({
-            tweetId:id,
-            userId:user._id
+        const [like, created] = await Likes.findOrCreate({
+            where:{
+                tweetId,
+                userId:user._id
+            }
         });
-
+        if(!created){
+            const unlike = await Likes.destroy({
+                where:{
+                    tweetId,
+                    userId:user._id
+                }
+            });
+            if(unlike) return res.status(200).json({success:true,msg:"Unliked"});
+            else return res.status(500).json({success:false,msg:"Server Error"});
+        }
         if(like) return res.status(200).json({success:true,msg:"Liked"});
-        else return res.status(500).json({success:false,msg:"Server Error"})
+        else return res.status(500).json({success:false,msg:"Server Error"});
 
     } catch (err) {
         console.log(err);

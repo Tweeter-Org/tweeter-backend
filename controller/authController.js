@@ -116,7 +116,7 @@ const signup = async (req,res)=>{
             password
         } = req.body;
         const user = req.user;
-        if (!(user_name && password && name)) {
+        if (!(user_name && password)) {
           return res.status(400).json({sucess:false,msg:"All inputs are required"});
         }
 
@@ -136,16 +136,28 @@ const signup = async (req,res)=>{
             return res.status(400).json({sucess:false,msg:"Username Already Exists."});
         }
         const encryptedPassword = await bcrypt.hash(password, 12);
-        const updateuser = await User.update({
-            name,
-            user_name,
-            password:encryptedPassword,
-            isSignedup:true
-        },{
-            where:{
-                email:user.email
-            }
-        });
+        if(name){
+            const updateuser = await User.update({
+                name,
+                user_name,
+                password:encryptedPassword,
+                isSignedup:true
+            },{
+                where:{
+                    email:user.email
+                }
+            });
+        }else{
+            const updateuser = await User.update({
+                user_name,
+                password:encryptedPassword,
+                isSignedup:true
+            },{
+                where:{
+                    email:user.email
+                }
+            });
+        }
         return res.status(200).json({success:true,msg:`Welcome to tweeter, ${user_name}!`});
         
     } catch (err) {
@@ -245,15 +257,27 @@ const fverify = async (req,res) => {
         if (!otp) {
             return res.status(400).json({sucess:false,msg:"Input is required"});
          }
-        const user = await Otp.findOne({
+        const user = await User.findOne({
             where:{
                 email:email.toLowerCase()
             }
         });
+
         if(!user) 
             return res.status(404).json({success:false,msg:'user not found by the given mail'});
+
         const token=jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        if(user.otp == otp && user.expiry > Date.now()){
+
+        const sentotp = await Otp.findOne({
+            where:{
+                email:email.toLowerCase()
+            }
+        });
+
+        if(!sentotp)
+            return res.status(400).json({success:false, msg:'This OTP has expired'});
+
+        if(sentotp.otp == otp && sentotp.expiry > Date.now()){
             await Otp.destroy({
                 where:{
                     email:user.email
@@ -261,7 +285,7 @@ const fverify = async (req,res) => {
             });
             return res.status(200).json({success:true,msg:`OTP Verified!`,token});
         }
-        else if(user.otp == otp && user.expiry <= Date.now()){
+        else if(sentotp.otp == otp && sentotp.expiry <= Date.now()){
             return res.status(400).json({success:false, msg:'This OTP has expired'});
         }
         else{

@@ -3,6 +3,7 @@ const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
 const { Op } = require('sequelize');
 const fs = require('fs');
+const Likes = require('../models/Likes');
 
 const create = async (req,res) => {
     try {
@@ -17,7 +18,7 @@ const create = async (req,res) => {
         if(req.file !== undefined){
             filepath = 'uploads/' + req.file.filename;
         }
-        if(req.file!==undefined&&req.file.mimetype === 'video/mp4'){
+        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
             video = filepath
         }else{
             image = filepath
@@ -78,7 +79,16 @@ const feed = async (req,res) => {
 
 const likepost = async (req,res) =>{
     try {
+        const {id} = req.body;
         const user = req.user;
+
+        const like = await Likes.create({
+            tweetId:id,
+            userId:user._id
+        });
+
+        if(like) return res.status(200).json({success:true,msg:"Liked"});
+        else return res.status(500).json({success:false,msg:"Server Error"})
 
     } catch (err) {
         console.log(err);

@@ -12,12 +12,16 @@ if (!fs.existsSync('./uploads'))
 require('dotenv').config();
 const app = express();
 const cors=require('cors');
+const Likes = require('./models/Likes');
 app.use(cors({origin:true}));
 app.use(express.json());
 
 // Associations
 Tweet.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
 User.hasMany(Tweet);
+
+Tweet.belongsToMany(User, { through: Likes });
+User.belongsToMany(Tweet, { through: Likes });
 
 const connectdb = async ()=>{
     try {

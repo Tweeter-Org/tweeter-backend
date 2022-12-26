@@ -15,11 +15,8 @@ const authverifytoken=async (req,res,next)=>{
             return res.status(400).json({sucess:false,msg:"Invalid or Expired Token"});  
           }
           const {_id}=payload;
-          const user = await User.findOne({
-            where:{
-              _id
-            }
-          });
+          console.log(payload);
+          const user = await User.findByPk(_id);
           if(!user) return res.status(404).json({status:false,msg:"Failed to find user from token."});
           req.user=user;
           next();

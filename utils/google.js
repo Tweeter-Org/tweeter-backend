@@ -58,7 +58,9 @@ async function getGoogleUser(code) {
     if (user&&user.isSignedup==false) {
         await User.update({
             name:googleUser.name,
-            displaypic:googleUser.picture
+            displaypic:googleUser.picture,
+            user_name:googleUser.given_name+Math.floor(Date.now()/1000),
+            isSignedup:true
         },{
             where:{
                 email:googleUser.email
@@ -74,13 +76,15 @@ async function getGoogleUser(code) {
     }
 
     if (!user) {
-        await User.create({
+        const newuser = await User.create({
             name:googleUser.name,
             displaypic:googleUser.picture,
-            email:googleUser.email
+            user_name:googleUser.given_name+Math.floor(Date.now()/1000),
+            email:googleUser.email,
+            isSignedup:true
         })
-        const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'singedup',token};
+        const token = jwt.sign({_id:newuser._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
+        return {success:true,msg:'signedup',token};
     }
   }
 

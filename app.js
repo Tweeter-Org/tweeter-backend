@@ -4,7 +4,8 @@ const authRoutes = require('./routes/authRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const User = require('./models/userModel');
 const Tweet = require('./models/tweetModel');
-const Otp = require('./models/otpModel');
+const nodeCron = require("node-cron");
+const nodecron = require('./utils/cleandb');
 const {getGoogleAuthURL,googleAuth} = require('./utils/google');
 const fs = require('fs');
 if (!fs.existsSync('./uploads'))
@@ -29,6 +30,10 @@ const connectdb = async ()=>{
         console.log('DB Connection has been established successfully.');
         app.listen(process.env.PORT);
         console.log(`Listening on port ${process.env.PORT}`);
+        const job = nodeCron.schedule("*/30 * * * *", () => {
+          nodecron.cleanDB();
+          console.log("called");
+        });
       } catch (err) {
         console.error('Unable to connect to the database:', err);
       }

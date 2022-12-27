@@ -10,7 +10,7 @@ const authverifytoken=async (req,res,next)=>{
         return res.status(400).json({sucess:false,msg:"Please login or signup before proceeding"});
       else{
         token = token.replace(/^Bearer\s+/, "");
-        const verify= jwt.verify(token,process.env.jwtsecretkey1,async (err,payload)=>{
+        const verify = jwt.verify(token,process.env.jwtsecretkey1,async (err,payload)=>{
           if(err){
             return res.status(400).json({sucess:false,msg:"Invalid or Expired Token"});  
           }

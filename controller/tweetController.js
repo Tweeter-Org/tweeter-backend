@@ -44,7 +44,7 @@ const create = async (req,res) => {
             return res.status(400).json({success:false,msg:"Error in creating tweet"})
 
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }
@@ -72,7 +72,7 @@ const feed = async (req,res) => {
             return res.status(500).json({success:false,msg:"Internal Server Error"});
     
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }                                                
 }
@@ -102,7 +102,7 @@ const likepost = async (req,res) =>{
         else return res.status(500).json({success:false,msg:"Server Error"});
 
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }

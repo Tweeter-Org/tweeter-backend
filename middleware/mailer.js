@@ -30,10 +30,13 @@ const sendmail = async (email,otp) => {
     });
 
     transporter.sendMail(msg,err=>{
-        if(err) console.log(err);
-        else{
-             console.log("mail sent");
-             return true;
+        if(err){ 
+          //console.log(err);
+          return false
+        } 
+        else {
+          //console.log("mail sent");
+          return true;
         }
     });
 }

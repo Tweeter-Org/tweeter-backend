@@ -189,7 +189,6 @@ const login = async (req, res) => {
         user = {name:user.name,user_name:user.user_name,displaypic:user.displaypic};
         return res.status(200).json({sucess: true,msg:`Welcome back! ${user.user_name}`,token,user});
     } catch (err) {
-        console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }
@@ -215,7 +214,6 @@ const forgotpwd = async (req,res) => {
         const result = mailer.sendmail(email,mailedOTP);
 
         if(result){
-            console.log('mail sent.');
             const expiresat = Date.now() + 300000;
 
             const oldotp = await Otp.update({
@@ -243,7 +241,7 @@ const forgotpwd = async (req,res) => {
         }
 
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }
@@ -293,7 +291,7 @@ const fverify = async (req,res) => {
         }
 
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }
@@ -317,7 +315,7 @@ const resetpass = async(req,res) => {
         }
 
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }
@@ -341,7 +339,7 @@ const resendotp = async (req,res) => {
             lowerCaseAlphabets: false
         });
         const result = mailer.sendmail(email,mailedOTP);
-        console.log('mail sent.');
+        //console.log('mail sent.');
         const expiresat = Date.now() + 300000;
         const oldotp = await Otp.update({
             otp : mailedOTP,
@@ -361,7 +359,7 @@ const resendotp = async (req,res) => {
         }
         return res.status(200).json({success:true,msg:"Otp sent to mail"});
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }
@@ -389,7 +387,7 @@ const search = async (req,res) => {
         })
         res.status(200).json({success:true,result:users});
     } catch (err) {
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }

@@ -4,6 +4,7 @@ const User = require('../models/userModel');
 const { Op } = require('sequelize');
 const fs = require('fs');
 const Likes = require('../models/Likes');
+const Bookmarks = require('../models/Bookmark');
 
 const create = async (req,res) => {
     try {
@@ -81,7 +82,10 @@ const likepost = async (req,res) =>{
     try {
         const {tweetId} = req.body;
         const user = req.user;
-
+        const tweet = await Tweet.findByPk(tweetId);
+        if(!tweet)
+            return res.status(404).json({success:false,msg:"Tweet doesn't exist with this id."});
+            
         const [like, created] = await Likes.findOrCreate({
             where:{
                 tweetId,
@@ -107,8 +111,69 @@ const likepost = async (req,res) =>{
     }
 }
 
+const bookmark = async (req,res) => {
+    try {
+        const {tweetId} = req.body;
+        const user = req.user;
+        const tweet = await Tweet.findByPk(tweetId);
+        if(!tweet)
+            return res.status(404).json({success:false,msg:"Tweet doesn't exist with this id."});
+
+        const [save, created] = await Bookmarks.findOrCreate({
+            where:{
+                tweetId,
+                userId:user._id
+            }
+        });
+        if(!created){
+            const unsave = await Bookmarks.destroy({
+                where:{
+                    tweetId,
+                    userId:user._id
+                }
+            });
+            if(unsave) return res.status(200).json({success:true,msg:"Unsaved"});
+            else return res.status(500).json({success:false,msg:"Server Error"});
+        }
+        if(save) return res.status(200).json({success:true,msg:"Saved"});
+        else return res.status(500).json({success:false,msg:"Server Error"});
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const mysaved = async (req,res) => {
+    try {
+        const user = req.user;
+        const bookmarked = await Bookmarks.findAll({
+            where:{
+                userId:user._id
+            }
+        });
+        const tweets = [];
+        for(const bookmark of bookmarked){
+            const id = bookmark.tweetId;
+            const tweet = await Tweet.findOne({
+                where:{
+                    _id:id
+                },
+                attributes:['_id','text','image','video']
+            });
+            tweets.push(tweet);
+        }
+        return res.status(200).json({success:true,tweets});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     create,
     feed,
-    likepost
+    likepost,
+    bookmark,
+    mysaved
 }

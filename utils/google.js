@@ -42,9 +42,9 @@ async function getGoogleUser(code) {
       });
   
     return googleUser;
-  }
+}
 
-  async function googleAuth(code) {
+async function googleAuth(code) {
     const googleUser = await getGoogleUser(code);
 
     console.log(googleUser);
@@ -86,7 +86,7 @@ async function getGoogleUser(code) {
         const token = jwt.sign({_id:newuser._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
         return {success:true,msg:'signedup',token};
     }
-  }
+}
 
 
 module.exports = {

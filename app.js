@@ -14,6 +14,7 @@ require('dotenv').config();
 const app = express();
 const cors=require('cors');
 const Likes = require('./models/Likes');
+const Bookmarks = require('./models/Bookmark');
 app.use(cors({origin:true}));
 app.use(express.json());
 
@@ -23,6 +24,9 @@ User.hasMany(Tweet);
 
 Tweet.belongsToMany(User, { through: Likes });
 User.belongsToMany(Tweet, { through: Likes });
+
+Tweet.belongsToMany(User, { through: Bookmarks });
+User.belongsToMany(Tweet, { through: Bookmarks });
 
 const connectdb = async ()=>{
     try {

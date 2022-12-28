@@ -4,7 +4,7 @@ const Tweet = require('./tweetModel');
 const User = require('./userModel');
 
 
-const Likes = sequelize.define('like',{
+const Bookmarks = sequelize.define('bookmark',{
         tweetId: {
             type: Sequelize.BIGINT,
             references: {
@@ -22,4 +22,4 @@ const Likes = sequelize.define('like',{
 },{timestamps:false});
 
 
-module.exports = Likes;
+module.exports = Bookmarks;

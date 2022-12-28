@@ -31,11 +31,11 @@ const sendmail = async (email,otp) => {
 
     transporter.sendMail(msg,err=>{
         if(err){ 
-          //console.log(err);
+          console.log(err);
           return false
         } 
         else {
-          //console.log("mail sent");
+          console.log("mail sent");
           return true;
         }
     });

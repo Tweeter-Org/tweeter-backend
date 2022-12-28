@@ -136,8 +136,9 @@ const signup = async (req,res)=>{
             return res.status(400).json({sucess:false,msg:"Username Already Exists."});
         }
         const encryptedPassword = await bcrypt.hash(password, 12);
+        let updateuser;
         if(name){
-            const updateuser = await User.update({
+            updateuser = await User.update({
                 name,
                 user_name,
                 password:encryptedPassword,
@@ -148,7 +149,7 @@ const signup = async (req,res)=>{
                 }
             });
         }else{
-            const updateuser = await User.update({
+            updateuser = await User.update({
                 user_name,
                 password:encryptedPassword,
                 isSignedup:true
@@ -158,7 +159,11 @@ const signup = async (req,res)=>{
                 }
             });
         }
-        return res.status(200).json({success:true,msg:`Welcome to tweeter, ${user_name}!`});
+
+        let madeuser = await User.findByPk(user._id);
+        madeuser = {name:madeuser.name,user_name:madeuser.user_name,displaypic:madeuser.displaypic};
+        
+        return res.status(200).json({success:true,msg:`Welcome to tweeter, ${user_name}!`,user:madeuser});
         
     } catch (err) {
       return res.status(500).json({sucess:false,msg:`${err}`});

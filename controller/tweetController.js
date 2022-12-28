@@ -85,7 +85,7 @@ const likepost = async (req,res) =>{
         const tweet = await Tweet.findByPk(tweetId);
         if(!tweet)
             return res.status(404).json({success:false,msg:"Tweet doesn't exist with this id."});
-            
+
         const [like, created] = await Likes.findOrCreate({
             where:{
                 tweetId,
@@ -159,7 +159,14 @@ const mysaved = async (req,res) => {
                 where:{
                     _id:id
                 },
-                attributes:['_id','text','image','video']
+                order:[
+                    ['createdAt','DESC']
+                ],
+                attributes:['_id','text','image','video'],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                }
             });
             tweets.push(tweet);
         }

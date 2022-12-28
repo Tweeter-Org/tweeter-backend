@@ -19,7 +19,7 @@ const Bookmarks = sequelize.define('bookmark',{
                 key: '_id'
             }
         }
-},{timestamps:false});
+});
 
 
 module.exports = Bookmarks;

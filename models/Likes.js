@@ -19,7 +19,7 @@ const Likes = sequelize.define('like',{
                 key: '_id'
             }
         }
-},{timestamps:false});
+});
 
 
 module.exports = Likes;

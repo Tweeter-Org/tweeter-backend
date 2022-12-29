@@ -6,6 +6,7 @@ const User = require('../models/userModel');
 const Otp = require('../models/otpModel');
 const { Op } = require('sequelize');
 const regexval = require("../middleware/validate");
+const { rmSync } = require('fs');
 require('dotenv').config();
 
 const home = async (req,res) => {
@@ -304,6 +305,13 @@ const fverify = async (req,res) => {
 const resetpass = async(req,res) => {
     try {
         const {password} = req.body;
+        if(!password)
+            return res.status(400).json({success:false,msg:"Password Required"});
+
+        if(!regexval.validatepass(password)){
+            return res.status(400).json({sucess:false,msg:"Incorrect Password Format"});
+            }
+            
         const user = req.user;
         const encryptedPassword = await bcrypt.hash(password, 12);
         const updatepass = User.update({

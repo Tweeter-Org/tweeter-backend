@@ -307,11 +307,8 @@ const resetpass = async(req,res) => {
         const {password} = req.body;
         if(!password)
             return res.status(400).json({success:false,msg:"Password Required"});
-
-        if(!regexval.validatepass(password)){
+        if(!regexval.validatepass(password))
             return res.status(400).json({sucess:false,msg:"Incorrect Password Format"});
-            }
-            
         const user = req.user;
         const encryptedPassword = await bcrypt.hash(password, 12);
         const updatepass = User.update({
@@ -321,12 +318,10 @@ const resetpass = async(req,res) => {
                 email:user.email
             }
         });
-        if(updatepass[0]!=0){
+        if(updatepass[0]!=0)
             return res.status(200).json({sucess:true,msg:"Successfully reset password."});
-        }else{
+        else
             return res.status(404).json({sucess:false,msg:"User not found."});
-        }
-
     } catch (err) {
         //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

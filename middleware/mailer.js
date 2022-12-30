@@ -4,7 +4,7 @@ const sendmail = async (email,otp) => {
     const msg = {
         from: "spaces.inc.si@gmail.com",
         to: email,
-        subject: `OTP from Tweeter Inc.`,
+        subject: `${otp} is your OTP from Tweeter`,
         html: `
         <div
           class="container"

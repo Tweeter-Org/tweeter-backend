@@ -11,9 +11,9 @@ const  cleanDB = async () => {
                 }
             }
         })
-        if(delotp){
-            console.log("deleted");
-        }
+        // if(delotp){
+        //     console.log("deleted");
+        // }
     } catch(err){
         console.log(err);
     }

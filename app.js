@@ -32,7 +32,8 @@ const connectdb = async ()=>{
     try {
         const result = await sequelize.sync();
         console.log('DB Connection has been established successfully.');
-        app.listen(process.env.PORT);
+        const server = app.listen(process.env.PORT);
+        const io = require('socket.io')(server);
         console.log(`Listening on port ${process.env.PORT}`);
         const job = nodeCron.schedule("*/30 * * * *", () => {
           nodecron.cleanDB();
@@ -47,7 +48,7 @@ connectdb();
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
 
-app.use('/t',tweetRoutes);
+
 
 app.get('/auth/google/url',(req,res)=>{
     return res.send(getGoogleAuthURL());
@@ -66,4 +67,5 @@ app.get('/auth/google',async (req,res)=>{
   }
 });
 
+app.use('/t',tweetRoutes);
 app.use(authRoutes);

@@ -3,7 +3,6 @@ const {sequelize} = require('../utils/database');
 const Tweet = require('./tweetModel');
 const User = require('./userModel');
 
-
 const Bookmarks = sequelize.define('bookmark',{
         tweetId: {
             type: Sequelize.BIGINT,

@@ -7,7 +7,7 @@ const authverifytoken=async (req,res,next)=>{
       let token=req.headers['accesstoken'] || req.headers['authorization'];
       
       if(!token)
-        return res.status(400).json({sucess:false,msg:"Please login or signup before proceeding"});
+        return res.status(401).json({sucess:false,msg:"Please login or signup before proceeding"});
       else{
         token = token.replace(/^Bearer\s+/, "");
         const verify = jwt.verify(token,process.env.jwtsecretkey1,async (err,payload)=>{
@@ -23,7 +23,8 @@ const authverifytoken=async (req,res,next)=>{
         });
       }
     } catch(err){
-        return res.status(500).json({success:false,msg: err.message });
+        //console.log(err);
+        return res.status(501).json({success:false,msg:`${err}`});
     }
   }
   module.exports=  authverifytoken;

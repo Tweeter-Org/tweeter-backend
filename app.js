@@ -52,8 +52,6 @@ connectdb();
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
 
-
-
 app.get('/auth/google/url',(req,res)=>{
     return res.send(getGoogleAuthURL());
 });

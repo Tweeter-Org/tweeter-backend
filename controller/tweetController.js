@@ -24,9 +24,7 @@ const create = async (req,res) => {
         }else{
             image = filepath
         }
-
         const user = req.user;
-
         if(!user.isSignedup){
             if(filepath)
                 fs.unlinkSync(filepath);
@@ -217,7 +215,7 @@ const deltweet = async (req,res) => {
         if(deletedtweet)
             return res.status(200).json({success:true,msg:'Deleted tweet'});
         else
-            return res.status(400).json({success:false,msg:"Couldn't delete tweet"});
+            return res.status(403).json({success:false,msg:"Couldn't delete tweet"});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

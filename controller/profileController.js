@@ -8,6 +8,9 @@ const Follow = require('../models/Follow');
 const viewprofile = async (req,res) => {
     try {
         const {username} = req.params;
+        if(!username){
+            res.status(400).json({success:false,msg:"Username required"});
+        }
         const curruser = req.user;
         if(curruser.user_name==username){
             const followers = await Follow.findAndCountAll({
@@ -62,6 +65,9 @@ const viewprofile = async (req,res) => {
 const follow = async (req,res) =>{
     try {
         const {username} = req.params;
+        if(!username){
+            res.status(400).json({success:false,msg:"Username required"});
+        }
         const user = req.user;
         if(user.user_name==username)
             res.status(400).json({success:false,msg:"Cannot Follow Yourself."});
@@ -97,7 +103,39 @@ const follow = async (req,res) =>{
     }
 }
 
+const editprofile = async (req,res) => {
+    try {
+        let {name,bio} = req.body;
+        if(!name&&!bio&&req.file==undefined){
+            res.status(400).json({success:false,msg:"Must have atleast one non-empty field."});
+        }
+        if(!name) name = user.name;
+        if(!bio) bio = user.bio;
+        const user = req.user;
+        let filepath = user.displaypic;
+        if(req.file !== undefined){
+            filepath = 'uploads/' + req.file.filename;
+        }
+        const update = await User.update({
+            name,
+            bio,
+            displaypic: filepath
+        },{
+            where:{
+                _id:user._id
+            }
+        })
+        if(update[0]!==0)
+            return res.status(200).json({success:true,msg:"Edited profile"});
+        return res.status(500).json({success:false,msg:"Server Error"});
+    } catch (err) {
+        //console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     viewprofile,
-    follow
+    follow,
+    editprofile
 }

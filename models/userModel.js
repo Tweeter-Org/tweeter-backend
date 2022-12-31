@@ -16,6 +16,10 @@ const User = sequelize.define('user', {
         defaultValue: null,
         unique:true
     },
+    bio:{
+        type: Sequelize.STRING,
+        defaultValue: null
+    },
     email:{
         type: Sequelize.STRING,
         allowNull: false

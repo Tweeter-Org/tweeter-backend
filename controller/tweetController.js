@@ -55,7 +55,7 @@ const feed = async (req,res) => {
         const page = req.query.page | 0;
         const user = req.user;
         const tweets = await Tweet.findAll({
-            attributes:['_id','text','image','video'],
+            attributes:['_id','text','image','video','likes'],
             order:[
                 ['createdAt','DESC']
             ],
@@ -80,7 +80,6 @@ const feed = async (req,res) => {
                 like.push(true);
             else
                 like.push(false);
-            console.log(tweet);
         }
 
         if(tweets)
@@ -108,11 +107,23 @@ const liketweet = async (req,res) =>{
                 userId:user._id
             }
         });
+        if(created){
+            await Tweet.increment({likes:1},{
+                where:{
+                    _id:tweetId
+                }
+            });
+        }
         if(!created){
             const unlike = await Likes.destroy({
                 where:{
                     tweetId,
                     userId:user._id
+                }
+            });
+            await Tweet.increment({likes:-1},{
+                where:{
+                    _id:tweetId
                 }
             });
             if(unlike) return res.status(200).json({success:true,msg:"Unliked"});
@@ -178,7 +189,7 @@ const mysaved = async (req,res) => {
                 order:[
                     ['createdAt','DESC']
                 ],
-                attributes:['_id','text','image','video'],
+                attributes:['_id','text','image','video','likes'],
                 include:{
                     model:User,
                     attributes:['user_name','displaypic']

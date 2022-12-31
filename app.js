@@ -30,7 +30,7 @@ User.belongsToMany(Tweet, { through: Likes });
 Tweet.belongsToMany(User, { through: Bookmarks });
 User.belongsToMany(Tweet, { through: Bookmarks });
 
-User.belongsToMany(User,{through: Following});
+User.belongsToMany(User,{as:'follower',through: Following});
 
 const connectdb = async ()=>{
     try {

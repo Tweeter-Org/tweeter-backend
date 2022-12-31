@@ -18,7 +18,7 @@ const Following = sequelize.define('following',{
                 key: 'user_name'
             }
         }
-});
+},{timestamps:false});
 
 
 module.exports = Following;

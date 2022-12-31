@@ -52,8 +52,8 @@ const create = async (req,res) => {
 
 const feed = async (req,res) => {
     try {
-
         const page = req.query.page | 0;
+        const user = req.user;
         const tweets = await Tweet.findAll({
             attributes:['_id','text','image','video'],
             order:[
@@ -67,8 +67,24 @@ const feed = async (req,res) => {
             }
         });
 
+        const like = [];
+
+        for(const tweet of tweets){
+            const liked = await Likes.findOne({
+                where:{
+                    userId:user._id,
+                    tweetId:tweet._id
+                }
+            });
+            if(liked)
+                like.push(true);
+            else
+                like.push(false);
+            console.log(tweet);
+        }
+
         if(tweets)
-            return res.status(200).json({success:true,tweets});
+            return res.status(200).json({success:true,tweets,liked:like});
         else
             return res.status(500).json({success:false,msg:"Internal Server Error"});
     
@@ -78,7 +94,7 @@ const feed = async (req,res) => {
     }                                                
 }
 
-const likepost = async (req,res) =>{
+const liketweet = async (req,res) =>{
     try {
         const {tweetId} = req.body;
         const user = req.user;
@@ -177,10 +193,31 @@ const mysaved = async (req,res) => {
     }
 }
 
+const deltweet = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const user = req.user;
+        const deletedtweet = await Tweet.destroy({
+            where:{
+                _id:id,
+                userId:user._id
+            }
+        });
+        if(deletedtweet)
+            return res.status(200).json({success:true,msg:'Deleted tweet'});
+        else
+            return res.status(400).json({success:false,msg:"Couldn't delete tweet"});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     create,
     feed,
-    likepost,
+    liketweet,
     bookmark,
-    mysaved
+    mysaved,
+    deltweet
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const {sequelize} = require('./utils/database');
 const authRoutes = require('./routes/authRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 const User = require('./models/userModel');
 const Tweet = require('./models/tweetModel');
 const nodeCron = require("node-cron");
@@ -68,4 +69,5 @@ app.get('/auth/google',async (req,res)=>{
 });
 
 app.use('/t',tweetRoutes);
+app.use('/p',profileRoutes);
 app.use(authRoutes);

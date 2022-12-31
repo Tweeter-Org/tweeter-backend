@@ -16,6 +16,7 @@ const app = express();
 const cors=require('cors');
 const Likes = require('./models/Likes');
 const Bookmarks = require('./models/Bookmark');
+const Following = require('./models/Follow');
 app.use(cors({origin:true}));
 app.use(express.json());
 
@@ -28,6 +29,8 @@ User.belongsToMany(Tweet, { through: Likes });
 
 Tweet.belongsToMany(User, { through: Bookmarks });
 User.belongsToMany(Tweet, { through: Bookmarks });
+
+User.belongsToMany(User,{through: Following});
 
 const connectdb = async ()=>{
     try {

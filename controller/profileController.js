@@ -79,10 +79,13 @@ const viewprofile = async (req,res) => {
                 followingnames.push(un.user_name);
             }
 
+            const isfollowing = followernames.includes(curruser.user_name);
+
             res.status(200).json({
                 success:true,
                 user,
                 myprofile:false,
+                isfollowing,
                 followers:followernames,
                 following:followingnames
             });

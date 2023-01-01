@@ -117,6 +117,13 @@ const signup = async (req,res)=>{
             password
         } = req.body;
         const user = req.user;
+        const ev = await User.findOne({
+            where:{
+                email:user.email
+            }
+        });
+        if(ev.isSignedup==true)
+            res.status(400).json({sucess:false,msg:"Account already made."});
         if (!(user_name && password)) {
           return res.status(400).json({sucess:false,msg:"All inputs are required"});
         }

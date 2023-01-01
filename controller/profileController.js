@@ -52,6 +52,8 @@ const viewprofile = async (req,res) => {
                     user_name:username
                 }
             });
+            if(!user)
+                return res.status(404).json({success:false,msg:"User not found"});
             const followers = await Follow.findAll({
                 where:{
                     userId:user._id
@@ -169,8 +171,43 @@ const editprofile = async (req,res) => {
     }
 }
 
+const likedtweets = async (req,res) => {
+    try {
+        const user_name = req.params.username || req.user.user_name;
+        const user = await User.findOne({
+            where:{
+                user_name
+            }
+        });
+        if(!user)
+                return res.status(404).json({success:false,msg:"User not found"});
+        const likes = await Likes.findAll({
+            where:{
+                userId:user._id
+            }
+        });
+        const tweets = [];
+        for(const obj of likes){
+            
+            const tweet = await Tweet.findByPk(obj.tweetId,{
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },
+                attributes:['_id','text','image','video','likes']
+            });
+            tweets.push(tweet);
+        }
+        return res.status(200).json({success:true,tweets});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     viewprofile,
     follow,
-    editprofile
+    editprofile,
+    likedtweets
 }

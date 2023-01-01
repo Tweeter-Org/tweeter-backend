@@ -170,12 +170,13 @@ const follow = async (req,res) =>{
 const editprofile = async (req,res) => {
     try {
         let {name,bio} = req.body;
+        const user = req.user;
         if(!name&&!bio&&req.file==undefined){
             res.status(400).json({success:false,msg:"Must have atleast one non-empty field."});
         }
         if(!name) name = user.name;
         if(!bio) bio = user.bio;
-        const user = req.user;
+        
         let filepath = user.displaypic;
         if(req.file !== undefined){
             filepath = 'uploads/' + req.file.filename;

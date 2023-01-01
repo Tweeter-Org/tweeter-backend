@@ -12,6 +12,12 @@ const viewprofile = async (req,res) => {
             res.status(400).json({success:false,msg:"Username required"});
         }
         const curruser = req.user;
+        const user = await User.findOne({
+            attributes:['_id','name','user_name','displaypic','bio','email','createdAt'],
+            where:{
+                user_name:username
+            }
+        });
         if(curruser.user_name==username){
             const followers = await Follow.findAll({
                 where:{
@@ -38,20 +44,24 @@ const viewprofile = async (req,res) => {
                 });
                 followingnames.push(un.user_name);
             }
-            res.status(200).json({
+
+            const tweets = await Tweet.findAll({
+                where:{userId:user._id},
+                attributes:['_id','text','image','video','likes'],
+                order:[
+                    ['createdAt','DESC']
+                ]
+            });
+
+            return res.status(200).json({
                 success:true,
-                user:curruser,
+                user,
                 myprofile:true,
                 followers:followernames,
-                following:followingnames
+                following:followingnames,
+                tweets
             });
         }else{
-            const user = await User.findOne({
-                attributes:['_id','name','user_name','displaypic','bio','email','createdAt'],
-                where:{
-                    user_name:username
-                }
-            });
             if(!user)
                 return res.status(404).json({success:false,msg:"User not found"});
             const followers = await Follow.findAll({
@@ -83,7 +93,15 @@ const viewprofile = async (req,res) => {
 
             const isfollowing = followernames.includes(curruser.user_name);
 
-            res.status(200).json({
+            const tweets = await Tweet.findAll({
+                where:{userId:user._id},
+                attributes:['_id','text','image','video','likes'],
+                order:[
+                    ['createdAt','DESC']
+                ]
+            });
+
+            return res.status(200).json({
                 success:true,
                 user,
                 myprofile:false,

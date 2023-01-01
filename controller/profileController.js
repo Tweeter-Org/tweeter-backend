@@ -13,22 +13,37 @@ const viewprofile = async (req,res) => {
         }
         const curruser = req.user;
         if(curruser.user_name==username){
-            const followers = await Follow.findAndCountAll({
+            const followers = await Follow.findAll({
                 where:{
                     userId:curruser._id
                 }
             });
-            const following = await Follow.findAndCountAll({
+            const following = await Follow.findAll({
                 where:{
                     followerId:curruser._id
                 }
             });
+            const followernames = [],followingnames=[];
+
+            for(const obj of followers){
+                const un = await User.findByPk(obj.followerId,{
+                    attributes:['user_name']
+                });
+                followernames.push(un.user_name);
+            }
+
+            for(const obj of following){
+                const un = await User.findByPk(obj.userId,{
+                    attributes:['user_name']
+                });
+                followingnames.push(un.user_name);
+            }
             res.status(200).json({
                 success:true,
                 user:curruser,
                 myprofile:true,
-                followers:followers.count,
-                following:following.count
+                followers:followernames,
+                following:followingnames
             });
         }else{
             const user = await User.findOne({
@@ -37,22 +52,39 @@ const viewprofile = async (req,res) => {
                     user_name:username
                 }
             });
-            const followers = await Follow.findAndCountAll({
+            const followers = await Follow.findAll({
                 where:{
                     userId:user._id
                 }
             });
-            const following = await Follow.findAndCountAll({
+            const following = await Follow.findAll({
                 where:{
                     followerId:user._id
                 }
             });
+
+            const followernames = [],followingnames=[];
+
+            for(const obj of followers){
+                const un = await User.findByPk(obj.followerId,{
+                    attributes:['user_name']
+                });
+                followernames.push(un.user_name);
+            }
+
+            for(const obj of following){
+                const un = await User.findByPk(obj.userId,{
+                    attributes:['user_name']
+                });
+                followingnames.push(un.user_name);
+            }
+
             res.status(200).json({
                 success:true,
                 user,
                 myprofile:false,
-                followers:followers.count,
-                following:following.count
+                followers:followernames,
+                following:followingnames
             });
         }
 

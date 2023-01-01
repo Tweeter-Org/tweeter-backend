@@ -50,7 +50,11 @@ const viewprofile = async (req,res) => {
                 attributes:['_id','text','image','video','likes'],
                 order:[
                     ['createdAt','DESC']
-                ]
+                ],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                }
             });
 
             return res.status(200).json({
@@ -98,7 +102,11 @@ const viewprofile = async (req,res) => {
                 attributes:['_id','text','image','video','likes'],
                 order:[
                     ['createdAt','DESC']
-                ]
+                ],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                }
             });
 
             return res.status(200).json({
@@ -107,7 +115,8 @@ const viewprofile = async (req,res) => {
                 myprofile:false,
                 isfollowing,
                 followers:followernames,
-                following:followingnames
+                following:followingnames,
+                tweets
             });
         }
 

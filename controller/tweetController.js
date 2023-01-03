@@ -5,6 +5,7 @@ const { Op } = require('sequelize');
 const fs = require('fs');
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
+const Retweet = require('../models/Retweet');
 
 const create = async (req,res) => {
     try {
@@ -59,10 +60,15 @@ const feed = async (req,res) => {
             ],
             offset:page*15,
             limit:15,
-            include:{
+            include:[{
                 model:User,
                 attributes:['user_name','displaypic']
-            }
+            },{
+                model:Tweet,
+                as:'retweet',
+                attributes:['_id','text','image','video','likes'],
+                required:false
+            }]
         });
 
         const like = [];
@@ -222,11 +228,52 @@ const deltweet = async (req,res) => {
     }
 }
 
+const retweet = async (req,res) => {
+    try {
+        const {text,tweetId} = req.body;
+        if(!tweetId)
+            return res.status(400).json({success:false,msg:"Tweet Id required"});
+        if(!text){
+            return res.status(400)
+                .json({success:false,msg:"Text message required"});
+        }
+        let filepath = null,image=null,video=null;
+        if(req.file !== undefined){
+            filepath = 'uploads/' + req.file.filename;
+        }
+        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
+            video = filepath
+        }else{
+            image = filepath
+        }
+        const user = req.user;
+        if(!user.isSignedup){
+            if(filepath)
+                fs.unlinkSync(filepath);
+            return res.status(400).json({success:false,msg:'User not authorised'});
+        }
+
+        const tweet = user.createTweet({
+            text,
+            image,
+            video,
+            retweetId:tweetId
+        });
+        if(tweet)
+            return res.status(200).json({success:true,msg:'Retweeted'});
+        return res.status(500).json({success:false,msg:'Server Error'});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     create,
     feed,
     liketweet,
     bookmark,
     mysaved,
-    deltweet
+    deltweet,
+    retweet
 }

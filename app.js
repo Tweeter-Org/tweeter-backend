@@ -32,6 +32,8 @@ User.belongsToMany(Tweet, { through: Bookmarks });
 
 User.belongsToMany(User,{as:'follower',through: Follow});
 
+Tweet.belongsTo(Tweet,{as:'retweet'});
+
 const connectdb = async ()=>{
     try {
         const result = await sequelize.sync();

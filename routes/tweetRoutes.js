@@ -10,6 +10,7 @@ router.get('/bookmark',authverifytoken,tweetController.mysaved);
 router.post('/create',authverifytoken,Upload.uploadfile.single('file'),tweetController.create);
 router.post('/like',authverifytoken,tweetController.liketweet);
 router.post('/bookmark',authverifytoken,tweetController.bookmark);
+router.post('/retweet',authverifytoken,Upload.uploadfile.single('file'),tweetController.retweet);
 
 router.delete('/delete/:id',authverifytoken,tweetController.deltweet);
 

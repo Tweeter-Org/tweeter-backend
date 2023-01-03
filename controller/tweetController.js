@@ -5,7 +5,6 @@ const { Op } = require('sequelize');
 const fs = require('fs');
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
-const Retweet = require('../models/Retweet');
 
 const create = async (req,res) => {
     try {

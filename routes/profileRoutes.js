@@ -4,6 +4,8 @@ const Upload = require('../middleware/upload');
 const authverifytoken = require('../middleware/authveriftoken');
 const profileController = require('../controller/profileController');
 
+
+router.get('/search',profileController.unsearch);
 router.get('/liked/:username',authverifytoken,profileController.likedtweets);
 router.get('/:username',authverifytoken,profileController.viewprofile);
 

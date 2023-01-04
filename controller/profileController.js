@@ -238,9 +238,30 @@ const likedtweets = async (req,res) => {
     }
 }
 
+const unsearch = async (req,res) => {
+    try {
+        const text = req.query.find;
+        if(!text)
+            return res.status(400).json({success:false,msg:'User name required.'});
+        const users = await User.findAll({
+            where:{
+                user_name:{
+                    [Op.iLike]: `%${text}%`
+                }
+            },
+            attributes:['user_name']
+        });
+        return res.status(200).json({success:true,result:users});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     viewprofile,
     follow,
     editprofile,
-    likedtweets
+    likedtweets,
+    unsearch
 }

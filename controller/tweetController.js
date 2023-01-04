@@ -294,15 +294,17 @@ const tagtweet = async (req,res) => {
         const hashtag = await Tag.findOne({
             where:{
                 hashtag:tag
-            },
-            include:{
-                model:Tweet,
+            }
+        });
+        if(!hashtag)
+            return res.status(400).json({success:false,msg:"Hashtag not found"});
+        const tweets = await hashtag.getTweets({
                 order:[
                     ['createdAt','DESC']
                 ],
                 attributes:['_id','text','image','video','likes'],
-                // offset:page*15,
-                // limit:15,
+                offset:page*15,
+                limit:15,
                 include:[{
                     model:User,
                     attributes:['user_name','displaypic']
@@ -312,17 +314,11 @@ const tagtweet = async (req,res) => {
                     attributes:['_id','text','image','video','likes'],
                     required:false
                 }]
-            },
-            attributes:['hashtag']
         });
-        if(!hashtag)
-            return res.status(400).json({success:false,msg:"Hashtag not found"});
-        
-        let tweets = hashtag.tweets;
-        //tweets.slice(page*1,page*1+1);
+
         return res.status(200).json({success:true,tag,tweets});
     } catch (err) {
-        //console.log(err);
+        console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }

@@ -6,6 +6,7 @@ const fs = require('fs');
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
 const Tag = require('../models/Tag');
+
 const create = async (req,res) => {
     try {
         const {
@@ -42,9 +43,6 @@ const create = async (req,res) => {
         });
         if(tweet){
             for(const tag of tags){
-                // await tweet.createTag({
-                //     hashtag:tag
-                // });
                 const [save,created] = await Tag.findOrCreate({
                     where:{
                         hashtag:tag
@@ -207,10 +205,15 @@ const mysaved = async (req,res) => {
                     ['createdAt','DESC']
                 ],
                 attributes:['_id','text','image','video','likes'],
-                include:{
+                include:[{
                     model:User,
                     attributes:['user_name','displaypic']
-                }
+                },{
+                    model:Tweet,
+                    as:'retweet',
+                    attributes:['_id','text','image','video','likes'],
+                    required:false
+                }]
             });
             tweets.push(tweet);
         }

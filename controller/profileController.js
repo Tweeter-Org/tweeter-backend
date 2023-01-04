@@ -218,10 +218,15 @@ const likedtweets = async (req,res) => {
         for(const obj of likes){
             
             const tweet = await Tweet.findByPk(obj.tweetId,{
-                include:{
+                include:[{
                     model:User,
                     attributes:['user_name','displaypic']
-                },
+                },{
+                    model:Tweet,
+                    as:'retweet',
+                    attributes:['_id','text','image','video','likes'],
+                    required:false
+                }],
                 attributes:['_id','text','image','video','likes']
             });
             tweets.push(tweet);

@@ -15,7 +15,7 @@ const create = async (req,res) => {
             return res.status(400)
                 .json({success:false,msg:"Text message required"});
         }
-        
+
         let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
         tags = [...new Set(tags)];
 
@@ -281,6 +281,43 @@ const retweet = async (req,res) => {
     }
 }
 
+const tagtweet = async (req,res) => {
+    try {
+        const {tag} = req.params;
+        if(!tag)
+            return res.status(400).json({success:false,msg:"Hashtag name required"});
+        const hashtag = await Tag.findOne({
+            where:{
+                hashtag:tag
+            },
+            include:{
+                model:Tweet,
+                order:[
+                    ['createdAt','DESC']
+                ],
+                attributes:['_id','text','image','video','likes'],
+                
+                include:[{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },{
+                    model:Tweet,
+                    as:'retweet',
+                    attributes:['_id','text','image','video','likes'],
+                    required:false
+                }]
+            },
+            attributes:['hashtag']
+        });
+        if(!hashtag)
+            return res.status(400).json({success:false,msg:"Hashtag not found"});
+        return res.status(200).json({success:true,tag:hashtag});
+    } catch (err) {
+        //console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     create,
     feed,
@@ -288,5 +325,6 @@ module.exports = {
     bookmark,
     mysaved,
     deltweet,
-    retweet
+    retweet,
+    tagtweet
 }

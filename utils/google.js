@@ -53,7 +53,7 @@ async function googleAuth(code) {
         where:{
             email:googleUser.email
         }
-    })
+    });
 
     if (user&&user.isSignedup==false) {
         await User.update({

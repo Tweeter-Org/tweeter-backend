@@ -7,6 +7,7 @@ const authverifytoken = require('../middleware/authveriftoken');
 router.get('/feed',authverifytoken,tweetController.feed);
 router.get('/bookmark',authverifytoken,tweetController.mysaved);
 router.get('/tagged/:tag',authverifytoken,tweetController.tagtweet);
+router.get('/tags',authverifytoken,tweetController.searchtag);
 
 router.post('/create',authverifytoken,Upload.uploadfile.single('file'),tweetController.create);
 router.post('/like',authverifytoken,tweetController.liketweet);

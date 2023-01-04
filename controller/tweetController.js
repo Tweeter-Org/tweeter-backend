@@ -325,6 +325,26 @@ const tagtweet = async (req,res) => {
     }
 }
 
+const searchtag = async (req,res) => {
+    try {
+        const text = req.query.find;
+        if(!text)
+            return res.status(400).json({success:false,msg:'Tag name required.'});
+        const tags = await Tag.findAll({
+            where:{
+                hashtag:{
+                    [Op.iLike]: `${text}%`
+                }
+            },
+            attributes:['hashtag']
+        });
+        return res.status(200).json({success:true,result:tags});
+    } catch (err) {
+        //console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     create,
     feed,
@@ -333,5 +353,6 @@ module.exports = {
     mysaved,
     deltweet,
     retweet,
-    tagtweet
+    tagtweet,
+    searchtag
 }

@@ -400,7 +400,7 @@ const search = async (req,res) => {
             attributes:['name','user_name'],
             limit:10
         })
-        res.status(200).json({success:true,result:users});
+        return res.status(200).json({success:true,result:users});
     } catch (err) {
         //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

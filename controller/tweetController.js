@@ -287,6 +287,7 @@ const retweet = async (req,res) => {
 const tagtweet = async (req,res) => {
     try {
         const {tag} = req.params;
+        const page = req.query.page || 0;
         if(!tag)
             return res.status(400).json({success:false,msg:"Hashtag name required"});
         const hashtag = await Tag.findOne({
@@ -314,7 +315,10 @@ const tagtweet = async (req,res) => {
         });
         if(!hashtag)
             return res.status(400).json({success:false,msg:"Hashtag not found"});
-        return res.status(200).json({success:true,tag:hashtag});
+        
+        let tweets = hashtag.tweets;
+        //tweets.slice(page*1,page*1+1);
+        return res.status(200).json({success:true,tag,tweets});
     } catch (err) {
         //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

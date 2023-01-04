@@ -14,6 +14,7 @@ if (!fs.existsSync('./uploads'))
 require('dotenv').config();
 const app = express();
 const cors=require('cors');
+const Tag = require('./models/Tag');
 const Likes = require('./models/Likes');
 const Bookmarks = require('./models/Bookmark');
 const Follow = require('./models/Follow');
@@ -33,6 +34,9 @@ User.belongsToMany(Tweet, { through: Bookmarks });
 User.belongsToMany(User,{as:'follower',through: Follow});
 
 Tweet.belongsTo(Tweet,{as:'retweet'});
+
+Tweet.belongsToMany(Tag,{through:'tweettag'});
+Tag.belongsToMany(Tweet,{through:'tweettag'});
 
 const connectdb = async ()=>{
     try {

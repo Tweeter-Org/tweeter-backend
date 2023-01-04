@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 const fs = require('fs');
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
-
+const Tag = require('../models/Tag');
 const create = async (req,res) => {
     try {
         const {
@@ -15,6 +15,7 @@ const create = async (req,res) => {
             return res.status(400)
                 .json({success:false,msg:"Text message required"});
         }
+        const tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
         let filepath = null,image=null,video=null;
         if(req.file !== undefined){
             filepath = 'uploads/' + req.file.filename;
@@ -31,14 +32,25 @@ const create = async (req,res) => {
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
 
-        const tweet = user.createTweet({
+        const tweet = await user.createTweet({
             text,
             image,
             video
         });
-
-        if(tweet)
+        if(tweet){
+            for(const tag of tags){
+                // await tweet.createTag({
+                //     hashtag:tag
+                // });
+                const [save,created] = await Tag.findOrCreate({
+                    where:{
+                        hashtag:tag
+                    }
+                });
+                await tweet.addTag(save);
+            }
             return res.status(201).json({success:true,msg:"Created Tweet",id:tweet._id});
+        }
         else
             return res.status(400).json({success:false,msg:"Error in creating tweet"})
 
@@ -87,9 +99,8 @@ const feed = async (req,res) => {
 
         if(tweets)
             return res.status(200).json({success:true,tweets,liked:like});
-        else
-            return res.status(500).json({success:false,msg:"Internal Server Error"});
-    
+
+        return res.status(500).json({success:false,msg:"Server Error"});
     } catch (err) {
         //console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -252,7 +263,7 @@ const retweet = async (req,res) => {
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
 
-        const tweet = user.createTweet({
+        const tweet = await user.createTweet({
             text,
             image,
             video,

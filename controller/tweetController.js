@@ -234,6 +234,7 @@ const deltweet = async (req,res) => {
                 userId:user._id
             }
         });
+        console.log(deletedtweet);
         if(deletedtweet)
             return res.status(200).json({success:true,msg:'Deleted tweet'});
         else
@@ -300,7 +301,8 @@ const tagtweet = async (req,res) => {
                     ['createdAt','DESC']
                 ],
                 attributes:['_id','text','image','video','likes'],
-                
+                offset:page*15,
+                limit:15,
                 include:[{
                     model:User,
                     attributes:['user_name','displaypic']
@@ -327,7 +329,8 @@ const tagtweet = async (req,res) => {
 
 const searchtag = async (req,res) => {
     try {
-        const text = req.query.find;
+        let text = req.query.find;
+        text = text.replace(/#/g, '');
         if(!text)
             return res.status(400).json({success:false,msg:'Tag name required.'});
         const tags = await Tag.findAll({

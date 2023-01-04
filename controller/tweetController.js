@@ -301,8 +301,8 @@ const tagtweet = async (req,res) => {
                     ['createdAt','DESC']
                 ],
                 attributes:['_id','text','image','video','likes'],
-                offset:page*15,
-                limit:15,
+                // offset:page*15,
+                // limit:15,
                 include:[{
                     model:User,
                     attributes:['user_name','displaypic']

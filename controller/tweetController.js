@@ -15,7 +15,10 @@ const create = async (req,res) => {
             return res.status(400)
                 .json({success:false,msg:"Text message required"});
         }
-        const tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
+        
+        let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
+        tags = [...new Set(tags)];
+
         let filepath = null,image=null,video=null;
         if(req.file !== undefined){
             filepath = 'uploads/' + req.file.filename;

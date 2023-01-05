@@ -79,6 +79,10 @@ const feed = async (req,res) => {
                 model:Tweet,
                 as:'retweet',
                 attributes:['_id','text','image','video','likes'],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },
                 required:false
             }]
         });
@@ -212,6 +216,10 @@ const mysaved = async (req,res) => {
                     model:Tweet,
                     as:'retweet',
                     attributes:['_id','text','image','video','likes'],
+                    include:{
+                        model:User,
+                        attributes:['user_name','displaypic']
+                    },
                     required:false
                 }]
             });
@@ -315,7 +323,6 @@ const tagtweet = async (req,res) => {
                     required:false
                 }]
         });
-
         return res.status(200).json({success:true,tag,tweets});
     } catch (err) {
         console.log(err);

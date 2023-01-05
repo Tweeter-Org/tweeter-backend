@@ -51,10 +51,19 @@ const viewprofile = async (req,res) => {
                 order:[
                     ['createdAt','DESC']
                 ],
-                include:{
+                include:[{
                     model:User,
                     attributes:['user_name','displaypic']
-                }
+                },{
+                    model:Tweet,
+                    as:'retweet',
+                    attributes:['_id','text','image','video','likes'],
+                    include:{
+                        model:User,
+                        attributes:['user_name','displaypic']
+                    },
+                    required:false
+                }]
             });
 
             return res.status(200).json({
@@ -225,6 +234,10 @@ const likedtweets = async (req,res) => {
                     model:Tweet,
                     as:'retweet',
                     attributes:['_id','text','image','video','likes'],
+                    include:{
+                        model:User,
+                        attributes:['user_name','displaypic']
+                    },
                     required:false
                 }],
                 attributes:['_id','text','image','video','likes']

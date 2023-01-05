@@ -88,9 +88,16 @@ const feed = async (req,res) => {
         });
 
         const like = [];
+        const bookmark = [];
 
         for(const tweet of tweets){
             const liked = await Likes.findOne({
+                where:{
+                    userId:user._id,
+                    tweetId:tweet._id
+                }
+            });
+            const bookmarked = await Bookmarks.findOne({
                 where:{
                     userId:user._id,
                     tweetId:tweet._id
@@ -100,10 +107,15 @@ const feed = async (req,res) => {
                 like.push(true);
             else
                 like.push(false);
+
+            if(bookmarked)
+                bookmark.push(true);
+            else
+                bookmark.push(false);
         }
 
         if(tweets)
-            return res.status(200).json({success:true,tweets,liked:like});
+            return res.status(200).json({success:true,tweets,liked:like,bookmarked:bookmark});
 
         return res.status(500).json({success:false,msg:"Server Error"});
     } catch (err) {
@@ -225,7 +237,21 @@ const mysaved = async (req,res) => {
             });
             tweets.push(tweet);
         }
-        return res.status(200).json({success:true,tweets});
+        const like = [];
+
+        for(const tweet of tweets){
+            const liked = await Likes.findOne({
+                where:{
+                    userId:user._id,
+                    tweetId:tweet._id
+                }
+            });
+            if(liked)
+                like.push(true);
+            else
+                like.push(false);
+        }
+        return res.status(200).json({success:true,tweets,liked:like});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

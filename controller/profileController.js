@@ -33,16 +33,16 @@ const viewprofile = async (req,res) => {
 
             for(const obj of followers){
                 const un = await User.findByPk(obj.followerId,{
-                    attributes:['user_name']
+                    attributes:['name','user_name','displaypic']
                 });
-                followernames.push(un.user_name);
+                followernames.push(un);
             }
 
             for(const obj of following){
                 const un = await User.findByPk(obj.userId,{
-                    attributes:['user_name']
+                    attributes:['name','user_name','displaypic']
                 });
-                followingnames.push(un.user_name);
+                followingnames.push(un);
             }
 
             const tweets = await Tweet.findAll({
@@ -66,13 +66,42 @@ const viewprofile = async (req,res) => {
                 }]
             });
 
+            const like = [];
+            const bookmark = [];
+
+            for(const tweet of tweets){
+                const liked = await Likes.findOne({
+                    where:{
+                        userId:user._id,
+                        tweetId:tweet._id
+                    }
+                });
+                const bookmarked = await Bookmarks.findOne({
+                    where:{
+                        userId:user._id,
+                        tweetId:tweet._id
+                    }
+                });
+                if(liked)
+                    like.push(true);
+                else
+                    like.push(false);
+
+                if(bookmarked)
+                    bookmark.push(true);
+                else
+                    bookmark.push(false);
+            }
+
             return res.status(200).json({
                 success:true,
                 user,
                 myprofile:true,
                 followers:followernames,
                 following:followingnames,
-                tweets
+                tweets,
+                liked:like,
+                bookmarked:bookmark
             });
         }else{
             if(!user)
@@ -112,11 +141,47 @@ const viewprofile = async (req,res) => {
                 order:[
                     ['createdAt','DESC']
                 ],
-                include:{
+                include:[{
                     model:User,
                     attributes:['user_name','displaypic']
-                }
+                },{
+                    model:Tweet,
+                    as:'retweet',
+                    attributes:['_id','text','image','video','likes'],
+                    include:{
+                        model:User,
+                        attributes:['user_name','displaypic']
+                    },
+                    required:false
+                }]
             });
+
+            const like = [];
+            const bookmark = [];
+
+            for(const tweet of tweets){
+                const liked = await Likes.findOne({
+                    where:{
+                        userId:user._id,
+                        tweetId:tweet._id
+                    }
+                });
+                const bookmarked = await Bookmarks.findOne({
+                    where:{
+                        userId:user._id,
+                        tweetId:tweet._id
+                    }
+                });
+                if(liked)
+                    like.push(true);
+                else
+                    like.push(false);
+
+                if(bookmarked)
+                    bookmark.push(true);
+                else
+                    bookmark.push(false);
+            }
 
             return res.status(200).json({
                 success:true,
@@ -125,7 +190,9 @@ const viewprofile = async (req,res) => {
                 isfollowing,
                 followers:followernames,
                 following:followingnames,
-                tweets
+                tweets,
+                liked:like,
+                bookmarked:bookmark
             });
         }
 
@@ -244,7 +311,22 @@ const likedtweets = async (req,res) => {
             });
             tweets.push(tweet);
         }
-        return res.status(200).json({success:true,tweets});
+        const bookmark = [];
+
+        for(const tweet of tweets){
+            
+            const bookmarked = await Bookmarks.findOne({
+                where:{
+                    userId:user._id,
+                    tweetId:tweet._id
+                }
+            });
+            if(bookmarked)
+                bookmark.push(true);
+            else
+                bookmark.push(false);
+        }
+        return res.status(200).json({success:true,tweets,bookmarked:bookmark});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -262,7 +344,7 @@ const unsearch = async (req,res) => {
                     [Op.iLike]: `%${text}%`
                 }
             },
-            attributes:['name','user_name']
+            attributes:['name','user_name','displaypic']
         });
         return res.status(200).json({success:true,result:users});
     } catch (err) {

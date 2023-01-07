@@ -1,4 +1,3 @@
-const { rmSync } = require('fs');
 const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
 const { Op } = require('sequelize');

@@ -3,6 +3,7 @@ const {sequelize} = require('./utils/database');
 const authRoutes = require('./routes/authRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const replyRoutes = require('./routes/replyRoutes');
 const User = require('./models/userModel');
 const Tweet = require('./models/tweetModel');
 const nodeCron = require("node-cron");
@@ -18,6 +19,7 @@ const Tag = require('./models/Tag');
 const Likes = require('./models/Likes');
 const Bookmarks = require('./models/Bookmark');
 const Follow = require('./models/Follow');
+const Reply = require('./models/replyModel');
 app.use(cors({origin:true}));
 app.use(express.json());
 
@@ -37,6 +39,15 @@ Tweet.belongsTo(Tweet,{as:'retweet'});
 
 Tweet.belongsToMany(Tag,{through:'tweettag'});
 Tag.belongsToMany(Tweet,{through:'tweettag'});
+
+Reply.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
+User.hasMany(Reply);
+
+Reply.belongsTo(Tweet);
+Tweet.hasMany(Reply);
+
+Reply.belongsTo(Reply);
+Reply.hasMany(Reply);
 
 const connectdb = async ()=>{
     try {
@@ -77,4 +88,5 @@ app.get('/auth/google',async (req,res)=>{
 
 app.use('/t',tweetRoutes);
 app.use('/p',profileRoutes);
+app.use('/r',replyRoutes);
 app.use(authRoutes);

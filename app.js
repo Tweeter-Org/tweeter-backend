@@ -46,8 +46,7 @@ User.hasMany(Reply);
 Reply.belongsTo(Tweet);
 Tweet.hasMany(Reply);
 
-Reply.belongsTo(Reply);
-Reply.hasMany(Reply);
+Reply.hasMany(Reply,{sourceKey:'id',foreignkey:'replyId'});
 
 const connectdb = async ()=>{
     try {

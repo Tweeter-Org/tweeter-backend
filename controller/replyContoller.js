@@ -52,9 +52,11 @@ const create = async (req,res) => {
             });
             if(!reply)
                 res.status(404).json({success:false,msg:'Reply not found.'});
-            const arr = [];
-            arr.concat(reply.replyingto);
+            let arr = [];
+            console.log(reply.replyingto);
+            arr = reply.replyingto;
             arr.push(reply.user.user_name);
+            arr = [...new Set(arr)];
             const addreply = await reply.createReply({
                 text,
                 userId:user._id,

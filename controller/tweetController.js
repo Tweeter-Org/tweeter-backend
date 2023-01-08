@@ -281,6 +281,7 @@ const deltweet = async (req,res) => {
 const retweet = async (req,res) => {
     try {
         const {text,tweetId} = req.body;
+        const user = req.user;
         if(!tweetId)
             return res.status(400).json({success:false,msg:"Tweet Id required"});
         if(!text){
@@ -296,20 +297,22 @@ const retweet = async (req,res) => {
         }else{
             image = filepath
         }
-        const user = req.user;
+        const tweet = await Tweet.findByPk(tweetId);
+        if(!tweet)
+            return res.status(404).json({success:false,msg:'Tweet Not Found by Id'});
         if(!user.isSignedup){
             if(filepath)
                 fs.unlinkSync(filepath);
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
 
-        const tweet = await user.createTweet({
+        const retweet = await user.createTweet({
             text,
             image,
             video,
             retweetId:tweetId
         });
-        if(tweet)
+        if(retweet)
             return res.status(200).json({success:true,msg:'Retweeted'});
         return res.status(500).json({success:false,msg:'Server Error'});
     } catch (err) {

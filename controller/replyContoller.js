@@ -74,6 +74,106 @@ const create = async (req,res) => {
     }
 }
 
+const gettweetreplies = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const tweet = await Tweet.findByPk(id,{
+            attributes:['_id','text','image','video','likes'],
+            include:[{
+                model:User,
+                attributes:['user_name','displaypic']
+            },{
+                model:Tweet,
+                as:'retweet',
+                attributes:['_id','text','image','video','likes'],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },
+                required:false
+            }]
+        });
+        const replies = await tweet.getReplies({
+            attributes:['id','replyingto','text','image','video','likes'],
+            order:[
+                ['createdAt','DESC']
+            ],
+            include:[{
+                model:User,
+                attributes:['user_name','displaypic']
+            },{
+                model:Reply,
+                as:'rereply',
+                attributes:['id','text','image','video','likes'],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },
+                required:false
+            }]
+        });
+        return res.status(200).json({success:true,tweet,replies})
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const getreplyreplies = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const reply = await Reply.findByPk(id,{
+            attributes:['id','text','image','video','likes'],
+            include:[{
+                model:User,
+                attributes:['user_name','displaypic']
+            },{
+                model:Reply,
+                as:'rereply',
+                attributes:['id','text','image','video','likes'],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },
+                required:false
+            }]
+        });
+        const replies = await reply.getReplies({
+            attributes:['id','replyingto','text','image','video','likes'],
+            order:[
+                ['createdAt','DESC']
+            ],
+            include:[{
+                model:User,
+                attributes:['user_name','displaypic']
+            },{
+                model:Reply,
+                as:'rereply',
+                attributes:['id','text','image','video','likes'],
+                include:{
+                    model:User,
+                    attributes:['user_name','displaypic']
+                },
+                required:false
+            }]
+        });
+        return res.status(200).json({success:true,reply,replies});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const rereply = async (req,res) => {
+    try {
+        
+    } catch (err) {
+        
+    }
+}
+
 module.exports = {
-    create
+    create,
+    gettweetreplies,
+    getreplyreplies
 }

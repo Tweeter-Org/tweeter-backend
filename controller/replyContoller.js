@@ -21,34 +21,45 @@ const create = async (req,res) => {
         if(!tweetId)
             return res.status(400).json({success:false,msg:'Required tweetId'});
 
-            const tweet = await Tweet.findByPk(tweetId,{
-                include:{
-                    model:User
-                }
-            });
-            if(!tweet)
-                res.status(404).json({success:false,msg:'Tweet not found.'});
-            let arr = tweet.replyingto;
-            if(arr===null) arr=[];
-            arr.push(tweet.user.user_name);
-            const reply = await tweet.createTweet({
-                text,
-                userId:user._id,
-                image,
-                video,
-                replyingto: arr,
-                isreply:true
-            });
-            if(reply){
-                await Tweet.increment({reply_cnt:1},{
+        const tweet = await Tweet.findByPk(tweetId,{
+            include:{
+                model:User
+            }
+        });
+        if(!tweet)
+            res.status(404).json({success:false,msg:'Tweet not found.'});
+        let arr = tweet.replyingto;
+        if(arr===null) arr=[];
+        arr.push(tweet.user.user_name);
+
+        let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
+        tags = [...new Set(tags)];
+
+        const reply = await tweet.createTweet({
+            text,
+            userId:user._id,
+            image,
+            video,
+            replyingto: arr,
+            isreply:true
+        });
+        if(reply){
+            for(const tag of tags){
+                const [save,created] = await Tag.findOrCreate({
                     where:{
-                        _id:tweetId
+                        hashtag:tag
                     }
                 });
-                return res.status(200).json({success:true,msg:'Reply posted'});
+                await tweet.addTag(save);
             }
-            return res.status(500).json({success:false,msg:'Server Error'});
-        
+            await Tweet.increment({reply_cnt:1},{
+                where:{
+                    _id:tweetId
+                }
+            });
+            return res.status(200).json({success:true,msg:'Reply posted'});
+        }
+        return res.status(500).json({success:false,msg:'Server Error'});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -62,14 +73,14 @@ const gettweetreplies = async (req,res) => {
             attributes:['_id','text','image','video','likes'],
             include:[{
                 model:User,
-                attributes:['user_name','displaypic']
+                attributes:['name','user_name','displaypic']
             },{
                 model:Tweet,
                 as:'retweet',
                 attributes:['_id','text','image','video','likes'],
                 include:{
                     model:User,
-                    attributes:['user_name','displaypic']
+                    attributes:['name','user_name','displaypic']
                 },
                 required:false
             }]
@@ -81,7 +92,7 @@ const gettweetreplies = async (req,res) => {
             ],
             include:{
                 model:User,
-                attributes:['user_name','displaypic']
+                attributes:['name','user_name','displaypic']
             }
         });
         return res.status(200).json({success:true,tweet,replies})

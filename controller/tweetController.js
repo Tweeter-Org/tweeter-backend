@@ -76,14 +76,14 @@ const feed = async (req,res) => {
             limit:15,
             include:[{
                 model:User,
-                attributes:['user_name','displaypic']
+                attributes:['name','user_name','displaypic']
             },{
                 model:Tweet,
                 as:'retweet',
                 attributes:['_id','replyingto','text','image','video','likes'],
                 include:{
                     model:User,
-                    attributes:['user_name','displaypic']
+                    attributes:['name','user_name','displaypic']
                 },
                 required:false
             }]
@@ -225,14 +225,14 @@ const mysaved = async (req,res) => {
                 attributes:['_id','replyingto','text','image','video','likes'],
                 include:[{
                     model:User,
-                    attributes:['user_name','displaypic']
+                    attributes:['name','user_name','displaypic']
                 },{
                     model:Tweet,
                     as:'retweet',
                     attributes:['_id','replyingto','text','image','video','likes'],
                     include:{
                         model:User,
-                        attributes:['user_name','displaypic']
+                        attributes:['name','user_name','displaypic']
                     },
                     required:false
                 }]
@@ -346,21 +346,28 @@ const tagtweet = async (req,res) => {
         if(!hashtag)
             return res.status(400).json({success:false,msg:"Hashtag not found"});
         const tweets = await hashtag.getTweets({
-                order:[
-                    ['createdAt','DESC']
-                ],
-                attributes:['_id','text','image','video','likes'],
-                offset:page*15,
-                limit:15,
-                include:[{
+            where:{
+                isreply:false
+            },
+            order:[
+                ['createdAt','DESC']
+            ],
+            attributes:['_id','replyingto','text','image','video','likes'],
+            offset:page*15,
+            limit:15,
+            include:[{
+                model:User,
+                attributes:['name','user_name','displaypic']
+            },{
+                model:Tweet,
+                as:'retweet',
+                attributes:['_id','replyingto','text','image','video','likes'],
+                include:{
                     model:User,
-                    attributes:['user_name','displaypic']
-                },{
-                    model:Tweet,
-                    as:'retweet',
-                    attributes:['_id','text','image','video','likes'],
-                    required:false
-                }]
+                    attributes:['name','user_name','displaypic']
+                },
+                required:false
+            }]
         });
         return res.status(200).json({success:true,tag,tweets});
     } catch (err) {

@@ -294,16 +294,19 @@ const likedtweets = async (req,res) => {
         for(const obj of likes){
             
             const tweet = await Tweet.findByPk(obj.tweetId,{
+                where:{
+                    isreply:false
+                },
                 include:[{
                     model:User,
-                    attributes:['user_name','displaypic']
+                    attributes:['name','user_name','displaypic']
                 },{
                     model:Tweet,
                     as:'retweet',
                     attributes:['_id','replyingto','text','image','video','likes'],
                     include:{
                         model:User,
-                        attributes:['user_name','displaypic']
+                        attributes:['name','user_name','displaypic']
                     },
                     required:false
                 }],

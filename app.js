@@ -19,7 +19,6 @@ const Tag = require('./models/Tag');
 const Likes = require('./models/Likes');
 const Bookmarks = require('./models/Bookmark');
 const Follow = require('./models/Follow');
-const Reply = require('./models/replyModel');
 app.use(cors({origin:true}));
 app.use(express.json());
 
@@ -39,9 +38,6 @@ Tweet.belongsTo(Tweet,{as:'retweet'});
 
 Tweet.belongsToMany(Tag,{through:'tweettag'});
 Tag.belongsToMany(Tweet,{through:'tweettag'});
-
-Reply.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
-User.hasMany(Reply);
 
 // Reply.belongsTo(Tweet);
 // Tweet.hasMany(Reply);

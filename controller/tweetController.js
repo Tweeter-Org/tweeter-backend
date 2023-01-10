@@ -65,6 +65,9 @@ const feed = async (req,res) => {
         const page = req.query.page | 0;
         const user = req.user;
         const tweets = await Tweet.findAll({
+            where:{
+                isreply:false
+            },
             attributes:['_id','text','image','video','likes'],
             order:[
                 ['createdAt','DESC']

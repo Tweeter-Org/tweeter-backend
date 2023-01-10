@@ -43,11 +43,10 @@ Tag.belongsToMany(Tweet,{through:'tweettag'});
 Reply.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
 User.hasMany(Reply);
 
-Reply.belongsTo(Tweet);
-Tweet.hasMany(Reply);
+// Reply.belongsTo(Tweet);
+// Tweet.hasMany(Reply);
 
-Reply.belongsTo(Reply,{as:'rereply'});
-Reply.hasMany(Reply,{sourceKey:'id',foreignkey:'replyId'});
+Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 
 const connectdb = async ()=>{
     try {

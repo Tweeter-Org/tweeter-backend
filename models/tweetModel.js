@@ -8,6 +8,13 @@ const Tweet = sequelize.define('tweet',{
         allowNull: false,
         primaryKey: true
     },
+    isreply:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    replyingto:{
+        type: Sequelize.ARRAY(Sequelize.STRING)
+    },
     text:{
         type: Sequelize.STRING,
         allowNull: false

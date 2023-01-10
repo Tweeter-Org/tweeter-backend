@@ -206,18 +206,18 @@ const follow = async (req,res) =>{
     try {
         const {username} = req.params;
         if(!username){
-            res.status(400).json({success:false,msg:"Username required"});
+            return res.status(400).json({success:false,msg:"Username required"});
         }
         const user = req.user;
         if(user.user_name==username)
-            res.status(400).json({success:false,msg:"Cannot Follow Yourself."});
+            return res.status(400).json({success:false,msg:"Cannot Follow Yourself."});
         const followuser = await User.findOne({
             where:{
                 user_name:username
             }
         });
         if(!followuser)
-            res.status(404).json({success:false,msg:"User not found by that username."});
+            return res.status(404).json({success:false,msg:"User not found by that username."});
         const [follow, created] = await Follow.findOrCreate({
             where:{
                 userId:followuser._id,

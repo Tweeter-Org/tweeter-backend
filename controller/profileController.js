@@ -47,20 +47,20 @@ const viewprofile = async (req,res) => {
 
             const tweets = await Tweet.findAll({
                 where:{userId:user._id},
-                attributes:['_id','text','image','video','likes'],
+                attributes:['_id','replyingto','text','image','video','likes'],
                 order:[
                     ['createdAt','DESC']
                 ],
                 include:[{
                     model:User,
-                    attributes:['user_name','displaypic']
+                    attributes:['name','user_name','displaypic']
                 },{
                     model:Tweet,
                     as:'retweet',
-                    attributes:['_id','text','image','video','likes'],
+                    attributes:['_id','replyingto','text','image','video','likes'],
                     include:{
                         model:User,
-                        attributes:['user_name','displaypic']
+                        attributes:['name','user_name','displaypic']
                     },
                     required:false
                 }]
@@ -137,7 +137,7 @@ const viewprofile = async (req,res) => {
 
             const tweets = await Tweet.findAll({
                 where:{userId:user._id},
-                attributes:['_id','text','image','video','likes'],
+                attributes:['_id','replyingto','text','image','video','likes'],
                 order:[
                     ['createdAt','DESC']
                 ],
@@ -147,7 +147,7 @@ const viewprofile = async (req,res) => {
                 },{
                     model:Tweet,
                     as:'retweet',
-                    attributes:['_id','text','image','video','likes'],
+                    attributes:['_id','replyingto','text','image','video','likes'],
                     include:{
                         model:User,
                         attributes:['user_name','displaypic']
@@ -300,14 +300,14 @@ const likedtweets = async (req,res) => {
                 },{
                     model:Tweet,
                     as:'retweet',
-                    attributes:['_id','text','image','video','likes'],
+                    attributes:['_id','replyingto','text','image','video','likes'],
                     include:{
                         model:User,
                         attributes:['user_name','displaypic']
                     },
                     required:false
                 }],
-                attributes:['_id','text','image','video','likes']
+                attributes:['_id','replyingto','text','image','video','likes']
             });
             tweets.push(tweet);
         }

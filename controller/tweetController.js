@@ -68,7 +68,7 @@ const feed = async (req,res) => {
             where:{
                 isreply:false
             },
-            attributes:['_id','replyingto','text','image','video','likes'],
+            attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
             order:[
                 ['createdAt','DESC']
             ],
@@ -222,7 +222,7 @@ const mysaved = async (req,res) => {
                 order:[
                     ['createdAt','DESC']
                 ],
-                attributes:['_id','replyingto','text','image','video','likes'],
+                attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
                 include:[{
                     model:User,
                     attributes:['name','user_name','displaypic']
@@ -352,7 +352,7 @@ const tagtweet = async (req,res) => {
             order:[
                 ['createdAt','DESC']
             ],
-            attributes:['_id','replyingto','text','image','video','likes'],
+            attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
             offset:page*15,
             limit:15,
             include:[{

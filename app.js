@@ -46,7 +46,7 @@ Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 
 const connectdb = async ()=>{
     try {
-        const result = await sequelize.sync({force:true});
+        const result = await sequelize.sync();
         console.log('DB Connection has been established successfully.');
         const server = app.listen(process.env.PORT);
         const io = require('socket.io')(server);

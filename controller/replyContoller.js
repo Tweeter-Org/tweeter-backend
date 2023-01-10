@@ -18,7 +18,7 @@ const create = async (req,res) => {
         }
         if(!user.isSignedup)
             return res.status(400).json({success:false,msg:'User not authorised'});
-        if(!tweetId&&!replyId)
+        if(!tweetId)
             return res.status(400).json({success:false,msg:'Required tweetId'});
 
             const tweet = await Tweet.findByPk(tweetId,{

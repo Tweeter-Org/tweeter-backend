@@ -39,8 +39,14 @@ const create = async (req,res) => {
                 replyingto: arr,
                 isreply:true
             });
-            if(reply)
+            if(reply){
+                await Tweet.increment({reply_cnt:1},{
+                    where:{
+                        _id:tweetId
+                    }
+                });
                 return res.status(200).json({success:true,msg:'Reply posted'});
+            }
             return res.status(500).json({success:false,msg:'Server Error'});
         
     } catch (err) {

@@ -27,6 +27,10 @@ const Tweet = sequelize.define('tweet',{
         type: Sequelize.STRING,
         defaultValue: null
     },
+    reply_cnt:{
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
     likes:{
         type: Sequelize.BIGINT,
         defaultValue: 0

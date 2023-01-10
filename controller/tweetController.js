@@ -271,8 +271,16 @@ const deltweet = async (req,res) => {
             }
         });
         console.log(deletedtweet);
-        if(deletedtweet)
+        if(deletedtweet){
+            if(deletedtweet.isreply){
+                await Tweet.increment({reply_cnt:1},{
+                    where:{
+                        _id:deletedtweet.tweetId
+                    }
+                });
+            }
             return res.status(200).json({success:true,msg:'Deleted tweet'});
+        }
         else
             return res.status(403).json({success:false,msg:"Couldn't delete tweet"});
     } catch (err) {

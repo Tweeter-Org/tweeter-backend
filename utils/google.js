@@ -52,7 +52,8 @@ async function googleAuth(code) {
     let user = await User.findOne({
         where:{
             email:googleUser.email
-        }
+        },
+        attributes:['name','user_name','displaypic']
     });
 
     if (user&&user.isSignedup==false) {
@@ -72,7 +73,7 @@ async function googleAuth(code) {
 
     if(user&&user.isSignedup==true){
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'loggedin',token};
+        return {success:true,msg:'loggedin',token,user};
     }
 
     if (!user) {
@@ -83,8 +84,7 @@ async function googleAuth(code) {
             name:googleUser.name,
             displaypic:googleUser.picture,
             user_name,
-            email:googleUser.email,
-            isSignedup:true
+            email:googleUser.email
         })
         const token = jwt.sign({_id:newuser._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
         return {success:true,msg:'signedup',token,name:googleUser.name,user_name};

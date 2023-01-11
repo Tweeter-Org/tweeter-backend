@@ -1,7 +1,5 @@
 const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
-const {sequelize} = require('../utils/database');
-
 
 const create = async (req,res) => {
     try {

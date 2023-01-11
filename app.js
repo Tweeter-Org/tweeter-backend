@@ -72,8 +72,10 @@ app.get('/auth/google',async (req,res)=>{
   try{
     const code = req.query.code;
     const result = await googleAuth(code);
-    if(result.success == true)
+    if(result && result.success == true)
       return res.status(200).json(result);
+    else
+      return res.status(500).json({success:false,msg:'Server Error'});
   }catch(err){
     console.log(err);
     const statusCode = 500;

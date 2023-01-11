@@ -47,33 +47,35 @@ async function getGoogleUser(code) {
 async function googleAuth(code) {
     const googleUser = await getGoogleUser(code);
 
-    console.log(googleUser);
-
     let user = await User.findOne({
         where:{
             email:googleUser.email
-        },
-        attributes:['name','user_name','displaypic']
+        }
     });
 
     if (user&&user.isSignedup==false) {
+        const user_name = user.user_name || googleUser.given_name+Math.floor(Date.now()/1000);
         await User.update({
             name:googleUser.name,
             displaypic:googleUser.picture,
-            user_name:googleUser.given_name+Math.floor(Date.now()/1000),
-            isSignedup:true
+            user_name,
+            isSignedup: false
         },{
             where:{
                 email:googleUser.email
             }
         });
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'signedup',token};
+        return {success:true,msg:'signedup',token,name:googleUser.name,user_name,displaypic:googleUser.picture};
     }
 
     if(user&&user.isSignedup==true){
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'loggedin',token,user};
+        return {success:true,msg:'loggedin',token,
+            name:user.name,
+            user_name:user.user_name,
+            displaypic:user.displaypic
+        };
     }
 
     if (!user) {
@@ -87,7 +89,7 @@ async function googleAuth(code) {
             email:googleUser.email
         })
         const token = jwt.sign({_id:newuser._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'signedup',token,name:googleUser.name,user_name};
+        return {success:true,msg:'signedup',token,name:googleUser.name,user_name,displaypic:googleUser.picture};
     }
 }
 

@@ -13,7 +13,6 @@ const User = sequelize.define('user', {
     },
     user_name: {
         type: Sequelize.STRING,
-        defaultValue: null,
         unique:true
     },
     bio:{

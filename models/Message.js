@@ -16,7 +16,8 @@ const Message = sequelize.define('message',{
         defaultValue:null
     },
     video:{
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue:null
     }
 });
 

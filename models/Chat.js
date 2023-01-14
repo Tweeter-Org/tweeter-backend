@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const {sequelize} = require('../utils/database');
+const Message = require('./Message');
 
 
 const Chat = sequelize.define('chat',{

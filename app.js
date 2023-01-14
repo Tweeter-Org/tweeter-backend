@@ -42,10 +42,13 @@ Tweet.belongsToMany(Tag,{through:'tweettag'});
 Tag.belongsToMany(Tweet,{through:'tweettag'});
 
 User.belongsToMany(Chat,{through:'chatrel'});
-Chat.belongsToMany(Chat,{through:'chatrel'});
+Chat.belongsToMany(User,{through:'chatrel'});
 
 Message.belongsTo(Chat);
 Chat.hasMany(Message);
+
+Message.belongsTo(User);
+User.hasMany(Message);
 
 Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 

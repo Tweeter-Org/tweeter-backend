@@ -19,6 +19,8 @@ const Tag = require('./models/Tag');
 const Likes = require('./models/Likes');
 const Bookmarks = require('./models/Bookmark');
 const Follow = require('./models/Follow');
+const Chat = require('./models/Chat');
+const Message = require('./models/Message');
 app.use(cors({origin:true}));
 app.use(express.json());
 
@@ -39,8 +41,11 @@ Tweet.belongsTo(Tweet,{as:'retweet'});
 Tweet.belongsToMany(Tag,{through:'tweettag'});
 Tag.belongsToMany(Tweet,{through:'tweettag'});
 
-// Reply.belongsTo(Tweet);
-// Tweet.hasMany(Reply);
+User.belongsToMany(Chat,{through:'chatrel'});
+Chat.belongsToMany(Chat,{through:'chatrel'});
+
+Message.belongsTo(Chat);
+Chat.hasMany(Message);
 
 Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 
@@ -49,7 +54,6 @@ const connectdb = async ()=>{
         const result = await sequelize.sync();
         console.log('DB Connection has been established successfully.');
         const server = app.listen(process.env.PORT);
-        const io = require('socket.io')(server);
         console.log(`Listening on port ${process.env.PORT}`);
         const job = nodeCron.schedule("*/30 * * * *", () => {
           nodecron.cleanDB();

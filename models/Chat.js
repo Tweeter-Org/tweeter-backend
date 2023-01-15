@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const {sequelize} = require('../utils/database');
 const Message = require('./Message');
+const User = require('./userModel');
 
 
 const Chat = sequelize.define('chat',{
@@ -10,10 +11,6 @@ const Chat = sequelize.define('chat',{
         allowNull: false,
         primaryKey: true
     },
-    groupchat:{
-        type: Sequelize.BOOLEAN,
-        defaultValue:false
-    },
     latestmsg:{
         type: Sequelize.BIGINT,
         references: {
@@ -21,9 +18,19 @@ const Chat = sequelize.define('chat',{
             key: '_id'
         }
     },
-    name:{
-        type: Sequelize.STRING,
-        defaultValue:'Unnamed'
+    first:{
+        type: Sequelize.INTEGER,
+        references:{
+            model: User,
+            key: '_id'
+        }
+    },
+    second:{
+        type: Sequelize.INTEGER,
+        references:{
+            model: User,
+            key: '_id'
+        }
     }
 });
 

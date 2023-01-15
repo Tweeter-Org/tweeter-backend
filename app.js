@@ -4,6 +4,7 @@ const authRoutes = require('./routes/authRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const replyRoutes = require('./routes/replyRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const User = require('./models/userModel');
 const Tweet = require('./models/tweetModel');
 const nodeCron = require("node-cron");
@@ -21,6 +22,7 @@ const Bookmarks = require('./models/Bookmark');
 const Follow = require('./models/Follow');
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
+const Chatrel = require('./models/Chatrel');
 app.use(cors({origin:true}));
 app.use(express.json());
 
@@ -41,8 +43,8 @@ Tweet.belongsTo(Tweet,{as:'retweet'});
 Tweet.belongsToMany(Tag,{through:'tweettag'});
 Tag.belongsToMany(Tweet,{through:'tweettag'});
 
-User.belongsToMany(Chat,{through:'chatrel'});
-Chat.belongsToMany(User,{through:'chatrel'});
+User.belongsToMany(Chat,{through: Chatrel});
+Chat.belongsToMany(User,{through: Chatrel});
 
 Message.belongsTo(Chat);
 Chat.hasMany(Message);
@@ -90,7 +92,9 @@ app.get('/auth/google',async (req,res)=>{
   }
 });
 
+app.use('/c',chatRoutes);
 app.use('/t',tweetRoutes);
 app.use('/p',profileRoutes);
 app.use('/r',replyRoutes);
+
 app.use(authRoutes);

@@ -48,6 +48,26 @@ const userchat = async (req,res) => {
     }
 }
 
+const mychat = async (req,res) => {
+    try {
+        const user = req.user;
+        const mychats = await Chat.findAll({
+            where:{
+                [Op.or]:[{first:user._id},{second:user._id}]
+            },
+            include:{
+                model:User,
+                attributes:['_id','name','user_name','displaypic']
+            }
+        });
+        return res.status(200).json({success:true,mychats});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
-    userchat
+    userchat,
+    mychat
 }

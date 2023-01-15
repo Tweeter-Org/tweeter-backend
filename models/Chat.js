@@ -12,11 +12,7 @@ const Chat = sequelize.define('chat',{
         primaryKey: true
     },
     latestmsg:{
-        type: Sequelize.BIGINT,
-        references: {
-            model: Message,
-            key: '_id'
-        }
+        type: Sequelize.STRING
     },
     first:{
         type: Sequelize.INTEGER,

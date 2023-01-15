@@ -2,6 +2,7 @@ const Chat = require("../models/Chat");
 const { Op } = require('sequelize');
 const Chatrel = require("../models/Chatrel");
 const User = require("../models/userModel");
+const Message = require("../models/Message");
 
 const userchat = async (req,res) => {
     try {
@@ -26,7 +27,6 @@ const userchat = async (req,res) => {
                 attributes:['_id','name','user_name','displaypic']
             }
         });
-        console.log(mychat);
         if(mychat)
             return res.status(200).json({success:true,newchat:false,chat:mychat});
         const newchat = await Chat.create({
@@ -67,7 +67,87 @@ const mychat = async (req,res) => {
     }
 }
 
+const newmsg = async (req,res) => {
+    try {
+        const {text,chatId} = req.body;
+        const user = req.user;
+        let filepath = null,image=null,video=null;
+        if(req.file !== undefined){
+            filepath = 'uploads/' + req.file.filename;
+        }
+        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
+            video = filepath
+        }else{
+            image = filepath
+        }
+        if(!chatId)
+            return res.status(400).json({success:false,msg:'chat Id required'});
+
+        const chat = await Chat.findByPk(chatId);
+        if(!chat)
+            return res.status(404).json({success:false,msg:'Chat not found'});
+        if(chat.first!=user._id&&chat.second!=user._id)
+            return res.status(400).json({success:false,msg:'Access Denied'});
+        const msg = await chat.createMessage({
+            text,
+            image,
+            video,
+            userId:user._id
+        });
+        let lmsg;
+        if(image)
+            lmsg = user.user_name + ': sent a photo';
+        if(video)
+            lmsg = user.user_name + ': sent a video';
+        if(text)
+            lmsg = user.user_name + ': ' + text;
+        
+        await Chat.update({
+            latestmsg:lmsg
+        },{
+            where:{
+                _id:chatId
+            }
+        });
+        return res.status(200).json({success:true,msg});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const allmsg = async (req,res) => {
+    try {
+        const user = req.user;
+        const {chatId} = req.params;
+        if(!chatId)
+            return res.status(400).json({success:false,msg:'chat Id required'});
+        const chat = await Chat.findByPk(chatId);
+        if(!chat)
+            return res.status(404).json({success:false,msg:'Chat not found'});
+        if(chat.first!=user._id&&chat.second!=user._id)
+            return res.status(400).json({success:false,msg:'Access Denied'});
+        const msgs = await Message.findAll({
+            where:{
+                chatId
+            },
+            order:[['createdAt','ASC']],
+            attributes:['text','image','video'],
+            include:{
+                model:User,
+                attributes:['_id','name','user_name','displaypic']
+            }
+        });
+        return res.status(200).json({success:true,messages:msgs});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     userchat,
-    mychat
+    mychat,
+    newmsg,
+    allmsg
 }

@@ -1,24 +1,29 @@
 
 
 module.exports = (socket) => {
-    console.log('connection to socket.io');
+    try{
+        console.log('connection to socket.io');
 
-          socket.on('setup',(userData)=>{
+        socket.on('setup',(userData)=>{
             socket.join(userData._id);
+            console.log('user with userId ' + userData._id + ' connected');
             socket.emit('connected');
-          });
+        });
 
-          socket.on('join chat',(chatId)=>{
+        socket.on('join chat',(chatId)=>{
             socket.join(chatId);
             console.log('User joined room: ' + chatId);
-          });
+        });
 
-          socket.on('new message',(newmsg)=>{
+        socket.on('new message',(newmsg)=>{
             let chat = newmsg.chat;
             chat.users.forEach(user => {
                 if(user._id===newmsg.userId) return;
                 socket.in(user._id).emit('message recieved',newmsg);
             });
-          });
-
+        });
+    }catch(err){
+        console.log(err);
+        socket.emit(err);
+    }
 }

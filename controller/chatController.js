@@ -89,7 +89,7 @@ const newmsg = async (req,res) => {
             return res.status(404).json({success:false,msg:'Chat not found'});
         if(chat.first!=user._id&&chat.second!=user._id)
             return res.status(400).json({success:false,msg:'Access Denied'});
-        const msg = await chat.createMessage({
+        let msg = await chat.createMessage({
             text,
             image,
             video,
@@ -109,6 +109,18 @@ const newmsg = async (req,res) => {
             where:{
                 _id:chatId
             }
+        });
+        msg = await Message.findByPk(msg._id,{
+            include:[{
+                model:User,
+                attributes:['_id','name','user_name','displaypic']
+            },{
+                model:Chat,
+                include:{
+                    model:User,
+                    attributes:['_id','name','user_name','displaypic']
+                }
+            }]
         });
         return res.status(200).json({success:true,msg});
     } catch (err) {
@@ -133,7 +145,7 @@ const allmsg = async (req,res) => {
                 chatId
             },
             order:[['createdAt','ASC']],
-            attributes:['text','image','video'],
+            attributes:['text','image','video','chatId'],
             include:{
                 model:User,
                 attributes:['_id','name','user_name','displaypic']

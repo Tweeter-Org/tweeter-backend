@@ -55,6 +55,7 @@ const mychat = async (req,res) => {
             where:{
                 [Op.or]:[{first:user._id},{second:user._id}]
             },
+            order:[['updatedAt','DESC']],
             include:{
                 model:User,
                 attributes:['_id','name','user_name','displaypic']

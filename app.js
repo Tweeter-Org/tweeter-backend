@@ -60,6 +60,25 @@ const connectdb = async ()=>{
         console.log('DB Connection has been established successfully.');
         const server = app.listen(process.env.PORT);
         console.log(`Listening on port ${process.env.PORT}`);
+        // const io = require('socket.io')(server,{
+        //   cors:{
+        //     origin:'*'
+        //   }
+        // });
+        // io.on('connection',(socket)=>{
+        //   console.log('connection to socket.io');
+
+        //   socket.on('setup',(userData)=>{
+        //     socket.join(userData._id);
+        //     socket.emit('connected');
+        //   });
+
+        //   socket.on('join chat',(chatId)=>{
+        //     socket.join(chatId);
+        //     console.log('User joined room: '+chatId);
+        //   });
+
+        // });
         const job = nodeCron.schedule("*/30 * * * *", () => {
           nodecron.cleanDB();
           console.log("called");

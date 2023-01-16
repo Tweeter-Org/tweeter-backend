@@ -344,7 +344,7 @@ const unsearch = async (req,res) => {
                     [Op.iLike]: `%${text}%`
                 }
             },
-            attributes:['name','user_name','displaypic']
+            attributes:['_id','name','user_name','displaypic']
         });
         return res.status(200).json({success:true,result:users});
     } catch (err) {

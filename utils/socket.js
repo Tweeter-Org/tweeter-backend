@@ -1,5 +1,3 @@
-
-
 module.exports = (socket) => {
     try{
         console.log('connection to socket.io');

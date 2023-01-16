@@ -33,14 +33,14 @@ const viewprofile = async (req,res) => {
 
             for(const obj of followers){
                 const un = await User.findByPk(obj.followerId,{
-                    attributes:['name','user_name','displaypic']
+                    attributes:['_id','name','user_name','displaypic']
                 });
                 followernames.push(un);
             }
 
             for(const obj of following){
                 const un = await User.findByPk(obj.userId,{
-                    attributes:['name','user_name','displaypic']
+                    attributes:['_id','name','user_name','displaypic']
                 });
                 followingnames.push(un);
             }
@@ -53,14 +53,14 @@ const viewprofile = async (req,res) => {
                 ],
                 include:[{
                     model:User,
-                    attributes:['name','user_name','displaypic']
+                    attributes:['_id','name','user_name','displaypic']
                 },{
                     model:Tweet,
                     as:'retweet',
                     attributes:['_id','replyingto','text','image','video','likes'],
                     include:{
                         model:User,
-                        attributes:['name','user_name','displaypic']
+                        attributes:['_id','name','user_name','displaypic']
                     },
                     required:false
                 }]

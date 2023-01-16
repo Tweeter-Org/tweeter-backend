@@ -397,7 +397,7 @@ const search = async (req,res) => {
                 }
                 ]
             },
-            attributes:['name','user_name','displaypic'],
+            attributes:['_id','name','user_name','displaypic'],
             limit:10
         })
         return res.status(200).json({success:true,result:users});

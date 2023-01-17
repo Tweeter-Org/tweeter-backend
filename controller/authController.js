@@ -168,8 +168,9 @@ const signup = async (req,res)=>{
             });
         }
 
-        let madeuser = await User.findByPk(user._id);
-        madeuser = {name:madeuser.name,user_name:madeuser.user_name,displaypic:madeuser.displaypic};
+        let madeuser = await User.findByPk(user._id,{
+            attributes:['_id','name','user_name','displaypic']
+        });
         
         return res.status(200).json({success:true,msg:`Welcome to tweeter, ${user_name}!`,user:madeuser});
         
@@ -190,7 +191,8 @@ const login = async (req, res) => {
         let user = await User.findOne({
             where:{
                 email:email.toLowerCase()
-            }
+            },
+            attributes:['_id','name','user_name','displaypic']
         });
         if (!user || (user && user.isSignedup==false)) 
             return res.status(400).json({sucess:false,msg:"This email doesn't have an account"});
@@ -199,7 +201,6 @@ const login = async (req, res) => {
         if (!result) return res.status(400).json({sucess:false,msg:"Wrong Password"});
 
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        user = {name:user.name,user_name:user.user_name,displaypic:user.displaypic};
         return res.status(200).json({sucess: true,msg:`Welcome back! ${user.user_name}`,token,user});
     } catch (err) {
         return res.status(500).json({success:false,msg:`${err}`});

@@ -55,7 +55,7 @@ async function googleAuth(code) {
 
     if (user&&user.isSignedup==false) {
         const user_name = user.user_name || googleUser.given_name+Math.floor(Date.now()/1000);
-        await User.update({
+        const suser = await User.update({
             name:googleUser.name,
             displaypic:googleUser.picture,
             user_name,
@@ -66,16 +66,12 @@ async function googleAuth(code) {
             }
         });
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'signedup',token,name:googleUser.name,user_name,displaypic:googleUser.picture};
+        return {success:true,msg:'signedup',token,user:suser};
     }
 
     if(user&&user.isSignedup==true){
         const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'loggedin',token,
-            name:user.name,
-            user_name:user.user_name,
-            displaypic:user.displaypic
-        };
+        return {success:true,msg:'loggedin',token,user};
     }
 
     if (!user) {
@@ -89,7 +85,7 @@ async function googleAuth(code) {
             email:googleUser.email
         })
         const token = jwt.sign({_id:newuser._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
-        return {success:true,msg:'signedup',token,name:googleUser.name,user_name,displaypic:googleUser.picture};
+        return {success:true,msg:'signedup',token,user:newuser};
     }
 }
 

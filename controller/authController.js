@@ -192,9 +192,9 @@ const login = async (req, res) => {
             where:{
                 email:email.toLowerCase()
             },
-            attributes:['_id','name','user_name','displaypic']
+            attributes:['_id','name','user_name','displaypic','password']
         });
-        if (!user || (user && user.isSignedup==false)) 
+        if (!user || (user && user.isSignedup==false))
             return res.status(400).json({sucess:false,msg:"This email doesn't have an account"});
 
         const result = await bcrypt.compare(password, user.password);

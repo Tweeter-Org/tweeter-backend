@@ -158,6 +158,16 @@ const allmsg = async (req,res) => {
     }
 }
 
+const share = async (req,res) => {
+    try {
+        const {tweetId} = req.body;
+        
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     userchat,
     mychat,

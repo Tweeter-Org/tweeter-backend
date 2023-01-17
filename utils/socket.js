@@ -20,6 +20,11 @@ module.exports = (socket) => {
                 socket.in(user._id).emit('message recieved',newmsg);
             });
         });
+
+        // socket.on('notif',(tweet)=>{
+            
+        // });
+
     }catch(err){
         console.log(err);
         socket.emit(err);

@@ -1,24 +1,15 @@
 const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
+const cloudinary = require('cloudinary').v2;
 
 const create = async (req,res) => {
     try {
         const {text,tweetId} = req.body;
         const user = req.user;
-        let filepath = null,image=null,video=null;
-        if(req.file !== undefined){
-            filepath = 'uploads/' + req.file.filename;
-        }
-        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
-            video = filepath
-        }else{
-            image = filepath
-        }
         if(!user.isSignedup)
             return res.status(400).json({success:false,msg:'User not authorised'});
         if(!tweetId)
             return res.status(400).json({success:false,msg:'Required tweetId'});
-
         const tweet = await Tweet.findByPk(tweetId,{
             include:{
                 model:User
@@ -33,6 +24,21 @@ const create = async (req,res) => {
         let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
         tags = [...new Set(tags)];
 
+        let file = req.file ? req.files.file : null;
+        let image=null,video=null;
+        if(file){
+            const result = await cloudinary.uploader.upload(file.tempFilePath,{
+                public_id: `${Date.now()}`,
+                resource_type:'auto',
+                folder:'images'
+            });
+            
+            if(result.resource_type=='video'){
+                video = result.secure_url
+            }else{
+                image = result.secure_url
+            }
+        }
         const reply = await tweet.createTweet({
             text,
             userId:user._id,

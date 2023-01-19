@@ -23,18 +23,19 @@ const create = async (req,res) => {
         if(!user.isSignedup){
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
-        const file = req.files.file;
-        console.log(file);
-        const result = await cloudinary.uploader.upload(file.tempFilePath,{
-            public_id: `${Date.now()}`,
-            resource_type:'auto',
-            folder:'images'
-        });
+        let file = req.file ? req.files.file : null;
         let image=null,video=null;
-        if(result.resource_type=='video'){
-            video = result.secure_url
-        }else{
-            image = result.secure_url
+        if(file){
+            const result = await cloudinary.uploader.upload(file.tempFilePath,{
+                public_id: `${Date.now()}`,
+                resource_type:'auto',
+                folder:'images'
+            });
+            if(result.resource_type=='video'){
+                video = result.secure_url
+            }else{
+                image = result.secure_url
+            }
         }
         const tweet = await user.createTweet({
             text,
@@ -324,17 +325,19 @@ const retweet = async (req,res) => {
         if(!user.isSignedup){
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
-        const file = req.files.file;
-        const result = await cloudinary.uploader.upload(file.tempFilePath,{
-            public_id: `${Date.now()}`,
-            resource_type:'auto',
-            folder:'images'
-        });
+        let file = req.file ? req.files.file : null;
         let image=null,video=null;
-        if(result.resource_type=='video'){
-            video = result.secure_url
-        }else{
-            image = result.secure_url
+        if(file){
+            const result = await cloudinary.uploader.upload(file.tempFilePath,{
+                public_id: `${Date.now()}`,
+                resource_type:'auto',
+                folder:'images'
+            });
+            if(result.resource_type=='video'){
+                video = result.secure_url
+            }else{
+                image = result.secure_url
+            }
         }
         const retweet = await user.createTweet({
             text,
@@ -432,23 +435,8 @@ const trending = async (req,res) => {
     }
 }
 
-const cupload = async (req,res) => {
-    try {
-        const file = req.files.file;
-        const result = await cloudinary.uploader.upload(file.tempFilePath,{
-            public_id: `${Date.now()}`,
-            resource_type:'auto',
-            folder:'images'
-        });
-        res.status(200).json(result);
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({success:false,msg:`${err}`});
-    }
-}
 
 module.exports = {
-    cupload,
     create,
     feed,
     liketweet,

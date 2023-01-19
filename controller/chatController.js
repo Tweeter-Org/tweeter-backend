@@ -73,23 +73,27 @@ const newmsg = async (req,res) => {
     try {
         const {text,chatId} = req.body;
         const user = req.user;
-        let filepath = null,image=null,video=null;
-        if(req.file !== undefined){
-            filepath = 'uploads/' + req.file.filename;
-        }
-        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
-            video = filepath
-        }else{
-            image = filepath
-        }
         if(!chatId)
             return res.status(400).json({success:false,msg:'chat Id required'});
-
         const chat = await Chat.findByPk(chatId);
         if(!chat)
             return res.status(404).json({success:false,msg:'Chat not found'});
         if(chat.first!=user._id&&chat.second!=user._id)
             return res.status(403).json({success:false,msg:'Access Denied'});
+        let file = req.file ? req.files.file : null;
+        let image=null,video=null;
+        if(file){
+            const result = await cloudinary.uploader.upload(file.tempFilePath,{
+                public_id: `${Date.now()}`,
+                resource_type:'auto',
+                folder:'images'
+            });
+            if(result.resource_type=='video'){
+                video = result.secure_url
+            }else{
+                image = result.secure_url
+            }
+        }
         let msg = await chat.createMessage({
             text,
             image,

@@ -8,7 +8,7 @@ router.get('/chat/:userId',authverifytoken,chatController.userchat);
 router.get('/mychats',authverifytoken,chatController.mychat);
 router.get('/messages/:chatId',authverifytoken,chatController.allmsg);
 
-router.post('/message',authverifytoken,Upload.uploadfile.single('file'),chatController.newmsg);
+router.post('/message',authverifytoken,chatController.newmsg);
 router.post('/share',authverifytoken,chatController.share);
 
 module.exports = router;

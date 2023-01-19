@@ -5,6 +5,6 @@ const Upload = require('../middleware/upload');
 const authverifytoken = require('../middleware/authveriftoken');
 
 router.get('/tweetreplies/:id',authverifytoken,replyController.gettweetreplies);
-router.post('/create',authverifytoken,Upload.uploadfile.single('file'),replyController.create);
+router.post('/create',authverifytoken,replyController.create);
 
 module.exports = router;

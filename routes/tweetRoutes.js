@@ -14,7 +14,6 @@ router.post('/create',authverifytoken,tweetController.create);
 router.post('/like',authverifytoken,tweetController.liketweet);
 router.post('/bookmark',authverifytoken,tweetController.bookmark);
 router.post('/retweet',authverifytoken,tweetController.retweet);
-router.post('/upload',authverifytoken,tweetController.cupload);
 
 router.delete('/delete/:id',authverifytoken,tweetController.deltweet);
 

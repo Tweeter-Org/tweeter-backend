@@ -12,6 +12,10 @@ const Tag = sequelize.define('tag',{
         type: Sequelize.STRING,
         unique:true,
         allowNull: false
+    },
+    tweet_cnt:{
+        type: Sequelize.BIGINT,
+        defaultValue: 1
     }
 });
 

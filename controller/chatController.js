@@ -152,7 +152,11 @@ const allmsg = async (req,res) => {
                 attributes:['_id','name','user_name','displaypic']
             },{
                 model: Tweet,
-                attributes:['_id','replyingto','text','image','video','likes','reply_cnt']
+                attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
+                include:{
+                    model:User,
+                    attributes:['_id','name','user_name','displaypic']
+                }
             }]
         });
         return res.status(200).json({success:true,messages:msgs});
@@ -208,7 +212,11 @@ const share = async (req,res) => {
                 attributes:['_id','name','user_name','displaypic']
             },{
                 model: Tweet,
-                attributes:['_id','replyingto','text','image','video','likes','reply_cnt']
+                attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
+                include:{
+                    model:User,
+                    attributes:['_id','name','user_name','displaypic']
+                }
             },
             {
                 model:Chat,

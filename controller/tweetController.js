@@ -47,6 +47,13 @@ const create = async (req,res) => {
                         hashtag:tag
                     }
                 });
+                if(!created){
+                    await Tag.increment({tweet_cnt:1},{
+                        where:{
+                            hashtag:tag
+                        }
+                    });
+                }
                 await tweet.addTag(save);
             }
             return res.status(201).json({success:true,msg:"Created Tweet",id:tweet._id});
@@ -76,14 +83,14 @@ const feed = async (req,res) => {
             limit:15,
             include:[{
                 model:User,
-                attributes:['name','user_name','displaypic']
+                attributes:['_id','name','user_name','displaypic']
             },{
                 model:Tweet,
                 as:'retweet',
                 attributes:['_id','replyingto','text','image','video','likes'],
                 include:{
                     model:User,
-                    attributes:['name','user_name','displaypic']
+                    attributes:['_id','name','user_name','displaypic']
                 },
                 required:false
             }]
@@ -393,6 +400,15 @@ const searchtag = async (req,res) => {
         return res.status(200).json({success:true,result:tags});
     } catch (err) {
         //console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const trending = async (req,res) => {
+    try {
+        const tags = await Tag.findAll()
+    } catch (err) {
+        console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
     }
 }

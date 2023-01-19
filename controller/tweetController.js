@@ -406,7 +406,14 @@ const searchtag = async (req,res) => {
 
 const trending = async (req,res) => {
     try {
-        const tags = await Tag.findAll()
+        const num = req.query.num || 5;
+        const tags = await Tag.findAll({
+            order:[
+                ['tweet_cnt','DESC']
+            ],
+            limit:num
+        });
+        return res.status(200).json({success:true,tags});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -422,5 +429,6 @@ module.exports = {
     deltweet,
     retweet,
     tagtweet,
-    searchtag
+    searchtag,
+    trending
 }

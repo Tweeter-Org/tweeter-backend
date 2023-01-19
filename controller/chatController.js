@@ -147,10 +147,13 @@ const allmsg = async (req,res) => {
             },
             order:[['createdAt','ASC']],
             attributes:['text','image','video','chatId'],
-            include:{
+            include:[{
                 model:User,
                 attributes:['_id','name','user_name','displaypic']
-            }
+            },{
+                model: Tweet,
+                attributes:['_id','replyingto','text','image','video','likes','reply_cnt']
+            }]
         });
         return res.status(200).json({success:true,messages:msgs});
     } catch (err) {
@@ -216,7 +219,7 @@ const share = async (req,res) => {
             }]
         });
 
-        return res.status(200).json({success:true});
+        return res.status(200).json({success:true,msg});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -227,5 +230,6 @@ module.exports = {
     userchat,
     mychat,
     newmsg,
-    allmsg
+    allmsg,
+    share
 }

@@ -254,7 +254,7 @@ const editprofile = async (req,res) => {
         if(!bio) bio = user.bio;
         
         let filepath = user.displaypic;
-        let file = req.file ? req.files.image : null;
+        let file = req.files ? req.files.image : null;
         if(file){
             const result = await cloudinary.uploader.upload(file.tempFilePath,{
                 public_id: `${Date.now()}`,

@@ -23,7 +23,7 @@ const create = async (req,res) => {
         if(!user.isSignedup){
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
-        let file = req.file ? req.files.file : null;
+        let file = req.files ? req.files.file : null;
         let image=null,video=null;
         if(file){
             const result = await cloudinary.uploader.upload(file.tempFilePath,{
@@ -325,7 +325,7 @@ const retweet = async (req,res) => {
         if(!user.isSignedup){
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
-        let file = req.file ? req.files.file : null;
+        let file = req.files ? req.files.file : null;
         let image=null,video=null;
         if(file){
             const result = await cloudinary.uploader.upload(file.tempFilePath,{

@@ -24,7 +24,7 @@ const create = async (req,res) => {
         let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
         tags = [...new Set(tags)];
 
-        let file = req.file ? req.files.file : null;
+        let file = req.files ? req.files.file : null;
         let image=null,video=null;
         if(file){
             const result = await cloudinary.uploader.upload(file.tempFilePath,{

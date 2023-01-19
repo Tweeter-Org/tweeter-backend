@@ -4,6 +4,7 @@ const Chatrel = require("../models/Chatrel");
 const User = require("../models/userModel");
 const Message = require("../models/Message");
 const Tweet = require("../models/tweetModel");
+const cloudinary = require('cloudinary').v2;
 
 const userchat = async (req,res) => {
     try {

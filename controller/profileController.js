@@ -4,6 +4,7 @@ const { Op } = require('sequelize');
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
 const Follow = require('../models/Follow');
+const cloudinary = require('cloudinary').v2;
 
 const viewprofile = async (req,res) => {
     try {

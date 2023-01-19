@@ -54,6 +54,8 @@ User.hasMany(Message);
 
 Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 
+Message.belongsTo(Tweet);
+
 const connectdb = async ()=>{
     try {
         const result = await sequelize.sync();

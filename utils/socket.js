@@ -5,7 +5,7 @@ module.exports = (socket) => {
         socket.on('setup',(userData)=>{
             socket.join(userData._id);
             console.log('user with userId ' + userData._id + ' connected');
-            socket.emit('connected');
+            socket.emit('connected','user '+ userData._id +' connected');
         });
 
         // socket.on('join chat',(chatId)=>{
@@ -21,9 +21,6 @@ module.exports = (socket) => {
             });
         });
 
-        // socket.on('notif',(tweet)=>{
-            
-        // });
 
     }catch(err){
         console.log(err);

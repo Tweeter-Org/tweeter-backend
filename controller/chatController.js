@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const Chatrel = require("../models/Chatrel");
 const User = require("../models/userModel");
 const Message = require("../models/Message");
+const Tweet = require("../models/tweetModel");
 
 const userchat = async (req,res) => {
     try {
@@ -88,7 +89,7 @@ const newmsg = async (req,res) => {
         if(!chat)
             return res.status(404).json({success:false,msg:'Chat not found'});
         if(chat.first!=user._id&&chat.second!=user._id)
-            return res.status(400).json({success:false,msg:'Access Denied'});
+            return res.status(403).json({success:false,msg:'Access Denied'});
         let msg = await chat.createMessage({
             text,
             image,
@@ -139,7 +140,7 @@ const allmsg = async (req,res) => {
         if(!chat)
             return res.status(404).json({success:false,msg:'Chat not found'});
         if(chat.first!=user._id&&chat.second!=user._id)
-            return res.status(400).json({success:false,msg:'Access Denied'});
+            return res.status(403).json({success:false,msg:'Access Denied'});
         const msgs = await Message.findAll({
             where:{
                 chatId
@@ -160,8 +161,62 @@ const allmsg = async (req,res) => {
 
 const share = async (req,res) => {
     try {
-        const {tweetId} = req.body;
+        const user = req.user;
+        const {text,tweetId,chatId} = req.body;
+        if(!tweetId)
+            return res.status(400).json({success:false,msg:'Tweet id required'});
+        const tweet = await Tweet.findByPk(tweetId);
+        const chat = await Chat.findByPk(chatId);
+        if(!chat)
+            return res.status(404).json({success:false,msg:'Chat not found'});
+        if(chat.first!=user._id&&chat.second!=user._id)
+            return res.status(403).json({success:false,msg:'Access Denied'});
+        if(!tweet)
+            return res.status(404).json({success:false,msg:'Tweet not found'});
+
+        let msg = null;
+        if(text){
+            msg = await chat.createMessage({
+                text,
+                tweetId,
+                userId:user._id
+            });
+        }else{
+            msg = await chat.createMessage({
+                tweetId,
+                userId:user._id
+            });
+        }
+        let lmsg = user.user_name + ': shared a tweet';
+        if(text)
+            lmsg = user.user_name + ': ' + text;
         
+        await Chat.update({
+            latestmsg:lmsg
+        },{
+            where:{
+                _id:chatId
+            }
+        });
+
+        msg = await Message.findByPk(msg._id,{
+            include:[{
+                model:User,
+                attributes:['_id','name','user_name','displaypic']
+            },{
+                model: Tweet,
+                attributes:['_id','replyingto','text','image','video','likes','reply_cnt']
+            },
+            {
+                model:Chat,
+                include:{
+                    model:User,
+                    attributes:['_id','name','user_name','displaypic']
+                }
+            }]
+        });
+
+        return res.status(200).json({success:true});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

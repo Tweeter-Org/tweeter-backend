@@ -10,7 +10,7 @@ router.get('/liked/:username',authverifytoken,profileController.likedtweets);
 router.get('/:username',authverifytoken,profileController.viewprofile);
 
 router.put('/follow/:username',authverifytoken,profileController.follow);
-router.put('/editprofile',authverifytoken,Upload.uploadImage.single('image'),profileController.editprofile);
+router.put('/editprofile',authverifytoken,profileController.editprofile);
 
 
 

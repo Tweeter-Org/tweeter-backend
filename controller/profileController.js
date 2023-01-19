@@ -255,7 +255,13 @@ const editprofile = async (req,res) => {
         
         let filepath = user.displaypic;
         if(req.file !== undefined){
-            filepath = 'uploads/' + req.file.filename;
+            file = req.files.image;
+            const result = await cloudinary.uploader.upload(file.tempFilePath,{
+                public_id: `${Date.now()}`,
+                resource_type:'auto',
+                folder:'images'
+            });
+            filepath = result.secure_url;
         }
         const update = await User.update({
             name,

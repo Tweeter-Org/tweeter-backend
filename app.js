@@ -1,4 +1,6 @@
 const express = require('express');
+const cloudinary = require('cloudinary').v2;
+const fileUpload = require('express-fileupload')
 const {sequelize} = require('./utils/database');
 const authRoutes = require('./routes/authRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
@@ -25,7 +27,15 @@ const Message = require('./models/Message');
 const Chatrel = require('./models/Chatrel');
 app.use(cors({origin:true}));
 app.use(express.json());
-
+app.use(fileUpload({
+  useTempFiles:true,
+  limits:{fileSize: 10*1024*1024}
+}));
+cloudinary.config({ 
+  cloud_name: 'dov6iolx4', 
+  api_key: '266736621665225', 
+  api_secret: 'sJ9QzdCBIDP-1OVnoIw-dFCtZew' 
+});
 // Associations
 Tweet.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
 User.hasMany(Tweet);

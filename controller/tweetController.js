@@ -2,6 +2,7 @@ const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
 const { Op } = require('sequelize');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
 const Tag = require('../models/Tag');
@@ -18,23 +19,23 @@ const create = async (req,res) => {
 
         let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
         tags = [...new Set(tags)];
-
-        let filepath = null,image=null,video=null;
-        if(req.file !== undefined){
-            filepath = 'uploads/' + req.file.filename;
-        }
-        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
-            video = filepath
-        }else{
-            image = filepath
-        }
         const user = req.user;
         if(!user.isSignedup){
-            if(filepath)
-                fs.unlinkSync(filepath);
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
-
+        const file = req.files.file;
+        console.log(file);
+        const result = await cloudinary.uploader.upload(file.tempFilePath,{
+            public_id: `${Date.now()}`,
+            resource_type:'auto',
+            folder:'images'
+        });
+        let image=null,video=null;
+        if(result.resource_type=='video'){
+            video = result.secure_url
+        }else{
+            image = result.secure_url
+        }
         const tweet = await user.createTweet({
             text,
             image,
@@ -280,16 +281,26 @@ const deltweet = async (req,res) => {
         console.log(deletedtweet);
         if(deletedtweet){
             if(deletedtweet.isreply){
-                await Tweet.increment({reply_cnt:1},{
+                await Tweet.increment({reply_cnt:-1},{
                     where:{
                         _id:deletedtweet.tweetId
+                    }
+                });
+            }
+            const text = deletedtweet.text || '';
+            let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
+            tags = [...new Set(tags)];
+            for(const tag of tags){
+                await Tag.increment({tweet_cnt:-1},{
+                    where:{
+                        hashtag:tag
                     }
                 });
             }
             return res.status(200).json({success:true,msg:'Deleted tweet'});
         }
         else
-            return res.status(403).json({success:false,msg:"Couldn't delete tweet"});
+            return res.status(400).json({success:false,msg:"Couldn't delete tweet"});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -306,24 +317,25 @@ const retweet = async (req,res) => {
             return res.status(400)
                 .json({success:false,msg:"Text message required"});
         }
-        let filepath = null,image=null,video=null;
-        if(req.file !== undefined){
-            filepath = 'uploads/' + req.file.filename;
-        }
-        if(req.file!==undefined && req.file.mimetype === 'video/mp4'){
-            video = filepath
-        }else{
-            image = filepath
-        }
+        
         const tweet = await Tweet.findByPk(tweetId);
         if(!tweet)
             return res.status(404).json({success:false,msg:'Tweet Not Found by Id'});
         if(!user.isSignedup){
-            if(filepath)
-                fs.unlinkSync(filepath);
             return res.status(400).json({success:false,msg:'User not authorised'});
         }
-
+        const file = req.files.file;
+        const result = await cloudinary.uploader.upload(file.tempFilePath,{
+            public_id: `${Date.now()}`,
+            resource_type:'auto',
+            folder:'images'
+        });
+        let image=null,video=null;
+        if(result.resource_type=='video'){
+            video = result.secure_url
+        }else{
+            image = result.secure_url
+        }
         const retweet = await user.createTweet({
             text,
             image,
@@ -420,7 +432,23 @@ const trending = async (req,res) => {
     }
 }
 
+const cupload = async (req,res) => {
+    try {
+        const file = req.files.file;
+        const result = await cloudinary.uploader.upload(file.tempFilePath,{
+            public_id: `${Date.now()}`,
+            resource_type:'auto',
+            folder:'images'
+        });
+        res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
+    cupload,
     create,
     feed,
     liketweet,

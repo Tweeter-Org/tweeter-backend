@@ -368,7 +368,7 @@ const readnotif =  async (req,res) => {
         const notif = await Notification.findByPk(notifId);
         if(!notif)
             return res.status(404).json({success:false,msg:'Notification not found'});
-        if(notif.reciever!=user._id){
+        if(notif.receiver!=user._id){
             return res.status(403).json({success:false,msg:'Access Denied'});
         }
         Notification.update({
@@ -381,7 +381,7 @@ const readnotif =  async (req,res) => {
         return res.status(200).json({success:true});
     } catch (err) {
         console.log(err);
-        res.status(500).json({success:false,msg:`${err}`});
+        return res.status(500).json({success:false,msg:`${err}`});
     }
 }
 
@@ -401,7 +401,7 @@ const mynotifs = async (req,res) => {
         return res.status(200).json({success:true,notifications:notifs});
     } catch (err) {
         console.log(err);
-        res.status(500).json({success:false,msg:`${err}`});
+        return res.status(500).json({success:false,msg:`${err}`});
     }
 }
 

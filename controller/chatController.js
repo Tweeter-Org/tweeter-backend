@@ -239,10 +239,37 @@ const share = async (req,res) => {
     }
 }
 
+const readmsg =  async (req,res) => {
+    try {
+        const {msgId} = req.params;
+        if(!msgId)
+            return res.status(400).json({success:false,msg:'Message Id required.'});
+        const user = req.user;
+        const message = await Message.findByPk(msgId);
+        if(!message)
+            return res.status(404).json({success:false,msg:'Message not found'});
+        if(message.userId!=user._id){
+            return res.status(403).json({success:false,msg:'Access Denied'});
+        }
+        Message.update({
+            is_read: true
+        },{
+            where:{
+                _id:msgId
+            }
+        });
+        return res.status(200).json({success:true});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     userchat,
     mychat,
     newmsg,
     allmsg,
-    share
+    share,
+    readmsg
 }

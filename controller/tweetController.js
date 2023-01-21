@@ -72,6 +72,37 @@ const create = async (req,res) => {
     }
 }
 
+const gettweet = async (req,res) => {
+    try {
+        const {tweetId} = req.params;
+        if(!tweetId)
+            return res.status(400).json({success:false,msg:'Tweet Id required'});
+        const tweet = await Tweet.findByPk(tweetId,{
+            where:{
+                isreply:false
+            },
+            attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
+            include:[{
+                model:User,
+                attributes:['_id','name','user_name','displaypic']
+            },{
+                model:Tweet,
+                as:'retweet',
+                attributes:['_id','replyingto','text','image','video','likes'],
+                include:{
+                    model:User,
+                    attributes:['_id','name','user_name','displaypic']
+                },
+                required:false
+            }]
+        });
+        return res.status(200).json({success:true,tweet});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 const feed = async (req,res) => {
     try {
         const page = req.query.page | 0;

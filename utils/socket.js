@@ -8,11 +8,6 @@ module.exports = (socket) => {
             socket.emit('connected','user '+ userData._id +' connected');
         });
 
-        // socket.on('join chat',(chatId)=>{
-        //     socket.join(chatId);
-        //     console.log('User joined room: ' + chatId);
-        // });
-
         socket.on('new message',(newmsg)=>{
             let chat = newmsg.chat;
             chat.users.forEach(user => {

@@ -18,6 +18,10 @@ const Message = sequelize.define('message',{
     video:{
         type: Sequelize.STRING,
         defaultValue:null
+    },
+    is_read:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     }
 });
 

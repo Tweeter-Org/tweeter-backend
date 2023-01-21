@@ -25,6 +25,7 @@ const Follow = require('./models/Follow');
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
 const Chatrel = require('./models/Chatrel');
+const Notification = require('./models/Notification');
 app.use(cors({origin:true}));
 app.use(express.json());
 app.use(fileUpload({
@@ -65,6 +66,10 @@ User.hasMany(Message);
 Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 
 Message.belongsTo(Tweet);
+
+Notification.belongsTo(User);
+
+Notification.belongsTo(Tweet);
 
 const connectdb = async ()=>{
     try {

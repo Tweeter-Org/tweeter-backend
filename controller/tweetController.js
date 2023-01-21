@@ -19,6 +19,8 @@ const create = async (req,res) => {
 
         let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
         tags = [...new Set(tags)];
+        let usernamelist = text.match(/(?<=[@])[\w]+/gi) || []; 
+        usernamelist = [...new Set(usernamelist)];
         const user = req.user;
         if(!user.isSignedup){
             return res.status(400).json({success:false,msg:'User not authorised'});
@@ -43,6 +45,7 @@ const create = async (req,res) => {
             video
         });
         if(tweet){
+            require('../utils/notifs').mentions(usernamelist,tweet._id,user._id);
             for(const tag of tags){
                 const [save,created] = await Tag.findOrCreate({
                     where:{
@@ -50,13 +53,13 @@ const create = async (req,res) => {
                     }
                 });
                 if(!created){
-                    await Tag.increment({tweet_cnt:1},{
+                    Tag.increment({tweet_cnt:1},{
                         where:{
                             hashtag:tag
                         }
                     });
                 }
-                await tweet.addTag(save);
+                tweet.addTag(save);
             }
             return res.status(201).json({success:true,msg:"Created Tweet",id:tweet._id});
         }
@@ -150,7 +153,7 @@ const liketweet = async (req,res) =>{
             }
         });
         if(created){
-            await Tweet.increment({likes:1},{
+            Tweet.increment({likes:1},{
                 where:{
                     _id:tweetId
                 }
@@ -163,7 +166,7 @@ const liketweet = async (req,res) =>{
                     userId:user._id
                 }
             });
-            await Tweet.increment({likes:-1},{
+            Tweet.increment({likes:-1},{
                 where:{
                     _id:tweetId
                 }

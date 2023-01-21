@@ -5,6 +5,7 @@ const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
 const Follow = require('../models/Follow');
 const cloudinary = require('cloudinary').v2;
+const Notification = require('../models/Notification');
 
 const viewprofile = async (req,res) => {
     try {
@@ -226,17 +227,15 @@ const follow = async (req,res) =>{
             }
         });
         if(!created){
-            const unfollow = await Follow.destroy({
+            Follow.destroy({
                 where:{
                     userId:followuser._id,
                     followerId:user._id
                 }
             });
-            if(unfollow) return res.status(200).json({success:true,msg:"Unfollowed"});
-            else return res.status(500).json({success:false,msg:"Server Error"});
+            return res.status(200).json({success:true,msg:"Unfollowed"});
         }
-        if(follow) return res.status(200).json({success:true,msg:"Followed"});
-        else return res.status(500).json({success:false,msg:"Server Error"});
+        return res.status(200).json({success:true,msg:"Followed"});
 
     } catch (err) {
         console.log(err);
@@ -360,10 +359,58 @@ const unsearch = async (req,res) => {
     }
 }
 
+const readnotif =  async (req,res) => {
+    try {
+        const {notifId} = req.params;
+        if(!notifId)
+            return res.status(400).json({success:false,msg:'Notification Id required.'});
+        const user = req.user;
+        const notif = await Notification.findByPk(notifId);
+        if(!notif)
+            return res.status(404).json({success:false,msg:'Notification not found'});
+        if(notif.reciever!=user._id){
+            return res.status(403).json({success:false,msg:'Access Denied'});
+        }
+        Notification.update({
+            is_read: true
+        },{
+            where:{
+                _id:notifId
+            }
+        });
+        return res.status(200).json({success:true});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
+const mynotifs = async (req,res) => {
+    try {
+        const user = req.user;
+        const notifs = await Notification.findAll({
+            where:{
+                receiver:user._id
+            },
+            include:[{
+                model:User,
+                attributes:['_id','name','user_name']
+            }],
+            attributes:['_id','type','tweetId','is_read']
+        });
+        return res.status(200).json({success:true,notifications:notifs});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({success:false,msg:`${err}`});
+    }
+}
+
 module.exports = {
     viewprofile,
     follow,
     editprofile,
     likedtweets,
-    unsearch
+    unsearch,
+    readnotif,
+    mynotifs
 }

@@ -1,39 +1,36 @@
 const Sequelize = require('sequelize');
 const {sequelize} = require('../utils/database');
-const Message = require('./Message');
+const Tweet = require('./tweetModel');
 const User = require('./userModel');
 
-
-const Chat = sequelize.define('chat',{
+const Notification = sequelize.define('notification',{
     _id:{
         type: Sequelize.BIGINT,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
     },
-    latestmsg:{
-        type: Sequelize.STRING,
-        defaultValue: 'New Chat Created'
-    },
-    first:{
-        type: Sequelize.INTEGER,
+    receiver:{
+        type: Sequelize.BIGINT,
         references:{
             model: User,
             key: '_id'
         }
     },
-    second:{
-        type: Sequelize.INTEGER,
+    type:{
+        type: Sequelize.STRING
+    },
+    tweetId:{
+        type: Sequelize.BIGINT,
         references:{
-            model: User,
+            model: Tweet,
             key: '_id'
         }
     },
-    new_msg:{
+    is_read:{
         type: Sequelize.BOOLEAN,
-        defaultValue: true
+        defaultValue: false
     }
 });
 
-
-module.exports = Chat;
+module.exports = Notification;

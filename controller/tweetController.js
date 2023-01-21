@@ -74,6 +74,7 @@ const create = async (req,res) => {
 
 const gettweet = async (req,res) => {
     try {
+        const user = req.user;
         const {tweetId} = req.params;
         if(!tweetId)
             return res.status(400).json({success:false,msg:'Tweet Id required'});
@@ -96,7 +97,21 @@ const gettweet = async (req,res) => {
                 required:false
             }]
         });
-        return res.status(200).json({success:true,tweet});
+        let liked = await Likes.findOne({
+            where:{
+                userId:user._id,
+                tweetId:tweet._id
+            }
+        });
+        liked = liked?true:false;
+        let bookmarked = await Bookmarks.findOne({
+            where:{
+                userId:user._id,
+                tweetId:tweet._id
+            }
+        });
+        bookmarked = bookmarked?true:false;
+        return res.status(200).json({success:true,tweet,liked,bookmarked});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});
@@ -480,5 +495,6 @@ module.exports = {
     retweet,
     tagtweet,
     searchtag,
-    trending
+    trending,
+    gettweet
 }

@@ -9,6 +9,7 @@ router.get('/bookmark',authverifytoken,tweetController.mysaved);
 router.get('/tagged/:tag',authverifytoken,tweetController.tagtweet);
 router.get('/tags',tweetController.searchtag);
 router.get('/trending',tweetController.trending);
+router.get('/tweet/:tweetId',authverifytoken,)
 
 router.post('/create',authverifytoken,tweetController.create);
 router.post('/like',authverifytoken,tweetController.liketweet);

@@ -6,6 +6,7 @@ const cloudinary = require('cloudinary').v2;
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
 const Tag = require('../models/Tag');
+const notifs = require('../utils/notifs');
 
 const create = async (req,res) => {
     try {
@@ -45,7 +46,7 @@ const create = async (req,res) => {
             video
         });
         if(tweet){
-            require('../utils/notifs').mentions(usernamelist,tweet._id,user._id);
+            notifs.mentions(usernamelist,tweet._id,user._id);
             for(const tag of tags){
                 const [save,created] = await Tag.findOrCreate({
                     where:{
@@ -64,7 +65,7 @@ const create = async (req,res) => {
             return res.status(201).json({success:true,msg:"Created Tweet",id:tweet._id});
         }
         else
-            return res.status(400).json({success:false,msg:"Error in creating tweet"})
+            return res.status(500).json({success:false,msg:"Error in creating tweet"})
 
     } catch (err) {
         //console.log(err);
@@ -204,8 +205,8 @@ const liketweet = async (req,res) =>{
                     _id:tweetId
                 }
             });
-        }
-        if(!created){
+            notifs.like(user._id,tweet.userId,tweetId,true);
+        }else{
             const unlike = await Likes.destroy({
                 where:{
                     tweetId,
@@ -217,6 +218,7 @@ const liketweet = async (req,res) =>{
                     _id:tweetId
                 }
             });
+            notifs.like(user._id,tweet.userId,tweetId,false);
             if(unlike) return res.status(200).json({success:true,msg:"Unliked"});
             else return res.status(500).json({success:false,msg:"Server Error"});
         }

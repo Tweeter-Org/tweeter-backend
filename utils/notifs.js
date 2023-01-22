@@ -17,6 +17,7 @@ const mentions = async (usernamelist,tweetId,userId) => {
                         tweetId,
                         userId
                     });
+
                 }
             }
         }
@@ -25,6 +26,30 @@ const mentions = async (usernamelist,tweetId,userId) => {
     }
 }
 
+const like = async (senderId,receiverId,tweetId,mode) =>{
+    try {
+        if(mode==true&&senderId!=receiverId){
+            Notification.create({
+                receiver:receiverId,
+                type:'like',
+                tweetId,
+                userId:senderId
+            });
+        }else if(mode==false&&senderId!=receiverId){
+            Notification.destroy({
+                where:{
+                receiver:receiverId,
+                type:'like',
+                tweetId,
+                userId:senderId
+            }});
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
-    mentions
+    mentions,
+    like
 }

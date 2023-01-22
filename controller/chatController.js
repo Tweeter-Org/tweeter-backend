@@ -109,7 +109,7 @@ const newmsg = async (req,res) => {
         if(text)
             lmsg = user.user_name + ': ' + text;
         
-        await Chat.update({
+        Chat.update({
             latestmsg:lmsg
         },{
             where:{
@@ -245,10 +245,15 @@ const readmsg =  async (req,res) => {
         if(!msgId)
             return res.status(400).json({success:false,msg:'Message Id required.'});
         const user = req.user;
-        const message = await Message.findByPk(msgId);
+        const message = await Message.findByPk(msgId,{
+            include:{
+                model:Chat
+            }
+        });
+        console.log(message);
         if(!message)
             return res.status(404).json({success:false,msg:'Message not found'});
-        if(message.userId!=user._id){
+        if((message.userId==user._id)||(user._id!=message.chat.first&&user._id!=message.chat.second)){
             return res.status(403).json({success:false,msg:'Access Denied'});
         }
         Message.update({

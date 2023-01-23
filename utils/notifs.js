@@ -17,7 +17,6 @@ const mentions = async (usernamelist,tweetId,userId) => {
                         tweetId,
                         userId
                     });
-
                 }
             }
         }
@@ -49,7 +48,29 @@ const like = async (senderId,receiverId,tweetId,mode) =>{
     }
 }
 
+const follow = async (senderId,receiverId,mode) => {
+    try {
+        if(mode==true&&senderId!=receiverId){
+            Notification.create({
+                receiver:receiverId,
+                type:'follow',
+                userId:senderId
+            });
+        }else if(mode==false&&senderId!=receiverId){
+            Notification.destroy({
+                where:{
+                receiver:receiverId,
+                type:'follow',
+                userId:senderId
+            }});
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
     mentions,
-    like
+    like,
+    follow
 }

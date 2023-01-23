@@ -12,9 +12,6 @@ const Tweet = require('./models/tweetModel');
 const nodeCron = require("node-cron");
 const nodecron = require('./utils/cleandb');
 const {getGoogleAuthURL,googleAuth} = require('./utils/google');
-const fs = require('fs');
-if (!fs.existsSync('./uploads'))
-  fs.mkdirSync('./uploads');
 require('dotenv').config();
 const app = express();
 const cors=require('cors');
@@ -83,7 +80,7 @@ const connectdb = async ()=>{
           }
         });
         io.on('connection',(socket)=>{
-          require('./utils/socket')(socket);
+          require('./utils/socket').init(socket);
         });
         const job = nodeCron.schedule("*/30 * * * *", () => {
           nodecron.cleanDB();
@@ -121,5 +118,4 @@ app.use('/c',chatRoutes);
 app.use('/t',tweetRoutes);
 app.use('/p',profileRoutes);
 app.use('/r',replyRoutes);
-
 app.use(authRoutes);

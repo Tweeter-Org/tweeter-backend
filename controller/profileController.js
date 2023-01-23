@@ -6,6 +6,7 @@ const Bookmarks = require('../models/Bookmark');
 const Follow = require('../models/Follow');
 const cloudinary = require('cloudinary').v2;
 const Notification = require('../models/Notification');
+const notifs = require('../utils/notifs');
 
 const viewprofile = async (req,res) => {
     try {
@@ -226,6 +227,9 @@ const follow = async (req,res) =>{
                 followerId:user._id
             }
         });
+        if(created){
+            notifs.follow(user._id,followuser._id,true);
+        }
         if(!created){
             Follow.destroy({
                 where:{
@@ -233,6 +237,7 @@ const follow = async (req,res) =>{
                     followerId:user._id
                 }
             });
+            notifs.follow(user._id,followuser._id,false);
             return res.status(200).json({success:true,msg:"Unfollowed"});
         }
         return res.status(200).json({success:true,msg:"Followed"});

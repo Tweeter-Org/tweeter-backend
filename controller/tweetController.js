@@ -461,7 +461,7 @@ const searchtag = async (req,res) => {
                     [Op.iLike]: `${text}%`
                 }
             },
-            attributes:['hashtag']
+            attributes:['hashtag','tweet_cnt']
         });
         return res.status(200).json({success:true,result:tags});
     } catch (err) {

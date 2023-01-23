@@ -1,7 +1,10 @@
-module.exports = (socket) => {
+let socketobj;
+
+
+const init = (socket) => {
     try{
         console.log('connection to socket.io');
-
+        socketobj=socket;
         socket.on('setup',(userData)=>{
             socket.join(userData._id);
             console.log('user with userId ' + userData._id + ' connected');
@@ -16,9 +19,13 @@ module.exports = (socket) => {
             });
         });
 
+        
 
     }catch(err){
         console.log(err);
-        socket.emit(err);
     }
+}
+
+module.exports = {
+    init
 }

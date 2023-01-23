@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const Upload = require('../middleware/upload');
 const chatController = require('../controller/chatController');
 const authverifytoken = require('../middleware/authveriftoken');
 

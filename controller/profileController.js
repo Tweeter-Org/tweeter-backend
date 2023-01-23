@@ -346,13 +346,18 @@ const likedtweets = async (req,res) => {
 
 const unsearch = async (req,res) => {
     try {
+        const user = req.user;
         const text = req.query.find;
         if(!text)
             return res.status(400).json({success:false,msg:'User name required.'});
         const users = await User.findAll({
             where:{
+                isSignedup:true,
                 user_name:{
                     [Op.iLike]: `%${text}%`
+                },
+                _id:{
+                    [Op.ne]:user._id
                 }
             },
             attributes:['_id','name','user_name','displaypic']

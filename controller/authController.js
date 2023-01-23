@@ -385,6 +385,7 @@ const search = async (req,res) => {
         const text = req.query.find;
         const users = await User.findAll({
             where:{
+                isSignedup:true,
                 [Op.or]:[
                 {
                     user_name:{

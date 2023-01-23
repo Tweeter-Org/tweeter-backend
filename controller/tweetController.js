@@ -279,9 +279,6 @@ const mysaved = async (req,res) => {
                 where:{
                     _id:id
                 },
-                order:[
-                    ['createdAt','DESC']
-                ],
                 attributes:['_id','replyingto','text','image','video','likes','reply_cnt'],
                 include:[{
                     model:User,
@@ -343,7 +340,7 @@ const deltweet = async (req,res) => {
             let tags = text.match(/(?<=[#|＃])[\w]+/gi) || [];
             tags = [...new Set(tags)];
             for(const tag of tags){
-                await Tag.increment({tweet_cnt:-1},{
+                Tag.increment({tweet_cnt:-1},{
                     where:{
                         hashtag:tag
                     }

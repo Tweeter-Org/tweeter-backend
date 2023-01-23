@@ -18,9 +18,12 @@ const viewprofile = async (req,res) => {
         const user = await User.findOne({
             attributes:['_id','name','user_name','displaypic','bio','email','createdAt'],
             where:{
-                user_name:username
+                user_name:username,
+                isSignedup:true
             }
         });
+        if(!user)
+            return res.status(404).json({success:false,msg:'User not found'});
         if(curruser.user_name==username){
             const followers = await Follow.findAll({
                 where:{

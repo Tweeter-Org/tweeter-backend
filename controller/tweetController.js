@@ -1,7 +1,6 @@
 const Tweet = require('../models/tweetModel');
 const User = require('../models/userModel');
 const { Op } = require('sequelize');
-const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const Likes = require('../models/Likes');
 const Bookmarks = require('../models/Bookmark');
@@ -270,7 +269,10 @@ const mysaved = async (req,res) => {
         const bookmarked = await Bookmarks.findAll({
             where:{
                 userId:user._id
-            }
+            },
+            order:[
+                ['createdAt','DESC']
+            ],
         });
         const tweets = [];
         for(const bookmark of bookmarked){
@@ -330,7 +332,7 @@ const deltweet = async (req,res) => {
         console.log(deletedtweet);
         if(deletedtweet){
             if(deletedtweet.isreply){
-                await Tweet.increment({reply_cnt:-1},{
+                Tweet.increment({reply_cnt:-1},{
                     where:{
                         _id:deletedtweet.tweetId
                     }

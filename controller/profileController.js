@@ -300,6 +300,9 @@ const likedtweets = async (req,res) => {
         if(!user)
                 return res.status(404).json({success:false,msg:"User not found"});
         const likes = await Likes.findAll({
+            order:[
+                ['createdAt','DESC']
+            ],
             where:{
                 userId:user._id
             }

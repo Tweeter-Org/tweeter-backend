@@ -328,22 +328,33 @@ const likedtweets = async (req,res) => {
             });
             tweets.push(tweet);
         }
+
+        const like = [];
         const bookmark = [];
 
         for(const tweet of tweets){
-            
+            const liked = await Likes.findOne({
+                where:{
+                    userId:user._id,
+                    tweetId:tweet._id
+                }
+            });
             const bookmarked = await Bookmarks.findOne({
                 where:{
                     userId:user._id,
                     tweetId:tweet._id
                 }
             });
+            if(liked)
+                like.push(true);
+            else
+                like.push(false);
             if(bookmarked)
                 bookmark.push(true);
             else
                 bookmark.push(false);
         }
-        return res.status(200).json({success:true,tweets,bookmarked:bookmark});
+        return res.status(200).json({success:true,tweets,liked:like,bookmarked:bookmark});
     } catch (err) {
         console.log(err);
         return res.status(500).json({success:false,msg:`${err}`});

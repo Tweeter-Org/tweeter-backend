@@ -272,7 +272,7 @@ const mysaved = async (req,res) => {
             },
             order:[
                 ['createdAt','DESC']
-            ],
+            ]
         });
         const tweets = [];
         for(const bookmark of bookmarked){

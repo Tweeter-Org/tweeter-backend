@@ -66,7 +66,7 @@ Message.belongsTo(Tweet);
 
 Notification.belongsTo(User);
 
-Notification.belongsTo(Tweet);
+Notification.belongsTo(Tweet,{constraints:true,onDelete:'CASCADE'});
 
 const connectdb = async ()=>{
     try {

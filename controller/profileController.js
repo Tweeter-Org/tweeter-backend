@@ -125,11 +125,17 @@ const viewprofile = async (req,res) => {
 
             const followernames = [],followingnames=[];
 
+            let isfollowing = false;
+            //followernames.includes(curruser.user_name);
+
             for(const obj of followers){
                 const un = await User.findByPk(obj.followerId,{
                     attributes:['_id','name','user_name','displaypic']
                 });
                 followernames.push(un);
+                if(un.user_name==curruser.user_name){
+                    isfollowing=true;
+                }
             }
 
             for(const obj of following){
@@ -137,9 +143,10 @@ const viewprofile = async (req,res) => {
                     attributes:['_id','name','user_name','displaypic']
                 });
                 followingnames.push(un);
+                
             }
 
-            const isfollowing = followernames.includes(curruser.user_name);
+            
 
             const tweets = await Tweet.findAll({
                 where:{userId:user._id},

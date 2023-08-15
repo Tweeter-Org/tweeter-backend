@@ -1,9 +1,13 @@
 # twitter_backend
 
 A Nodejs based backend system for a Social Media Platform using PostgreSQL,NodeJS,Express,Sequelize, and deployed on Render.
-With a ReactJS Website as Frontend:-
-- [ReactJS Website](https://github.com/Sanikagoyal28/Tweeter)
+With a ReactJS Website as Frontend.
+ 
 
+https://github.com/alanansari/twitter_backend/assets/22475370/58907286-9f5b-459e-9d71-36dd43abf198
+
+
+- [Frontend Codebase](https://github.com/Sanikagoyal28/Tweeter)
 ## TWEETER
 A social media website which provides users with the feature to grow their social connections, raise any issue or get updated of what's happening around
 Users can join TWEETER by simply creating their account, having an updated profile, and can create any tweets. Tweeter provides u the feature to have an             experience of real-time chats with your connections.

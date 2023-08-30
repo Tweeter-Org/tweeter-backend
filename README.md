@@ -1,30 +1,21 @@
-# twitter_backend
+# <p align = "center"> Tweeter-Backend </p>
 
-A Nodejs based backend system for a Social Media Platform using PostgreSQL,NodeJS,Express,Sequelize, and deployed on Render.
-With a ReactJS Website as Frontend.
- 
+## <p align = "center"> This is a Twitter clone whose backend is made in Node.js and Express Framework. </p>
+
+
+
+# <p align = "center">Backend Key Features </p>
+- Email or Google OAuth Signup/Signin.
+- JWT Authentication with complete integration of Refresh and Access tokens.
+- PostgreSQL for the DB because of its open source nature and several useful features.
+- Real time chat system using web-sockets (socket-io).
+- PostgreSQL database implementation using SequelizeORM for its features like relations, eager and lazy loading, read replication and more.
+
+### [Postman API documentation](https://documenter.getpostman.com/view/24068251/2s9Y5bQLxW)
+
+# <p align = "center">Preview </p>
 
 https://github.com/alanansari/twitter_backend/assets/22475370/58907286-9f5b-459e-9d71-36dd43abf198
-
-
-- [Frontend Codebase](https://github.com/Sanikagoyal28/Tweeter)
-## TWEETER
-A social media website which provides users with the feature to grow their social connections, raise any issue or get updated of what's happening around
-Users can join TWEETER by simply creating their account, having an updated profile, and can create any tweets. Tweeter provides u the feature to have an             experience of real-time chats with your connections.
-
-          
-## FEATURES
-1. SignIn/ SignUp using JWT and Google OAtuh Authentication.
-2. Create, Share, Reply, Retweet, Like or Bookmark any tweet.
-3. Notifications section to have all new notifications.
-4. Bookmarks section to see your bookmarked tweets.
-5. Real time chat system using web-sockets (socket-io).
-6. SQL database implementation using 
-
-TECH-STACKS :
-- Frontend: HTML, CSS, JS, ReactJS, Redux
-- Backend: NodeJS, ExpressJS, PostgreSQL
-- Designing: Figma
 
 ## RUNNING THE SERVER
 
@@ -70,4 +61,3 @@ You can access the endpoints from your web browser following this url
 ```url
 http://localhost:[PORT]
 ```
-

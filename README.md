@@ -11,7 +11,7 @@
 - Real time chat system using web-sockets (socket-io).
 - PostgreSQL database implementation using SequelizeORM for its features like relations, eager and lazy loading, read replication and more.
 
-### [Postman API documentation](https://documenter.getpostman.com/view/24068251/2s9Y5bQLxW)
+### [Postman API documentation](https://documenter.getpostman.com/view/24068251/2s9YJgTLMe)
 
 # <p align = "center">Preview </p>
 

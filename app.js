@@ -7,22 +7,24 @@ const tweetRoutes = require('./routes/tweetRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const replyRoutes = require('./routes/replyRoutes');
 const chatRoutes = require('./routes/chatRoutes');
-const User = require('./models/userModel');
-const Tweet = require('./models/tweetModel');
+const {
+  Bookmarks,
+  Chat,
+  Chatrel,
+  Follow,
+  Likes,
+  Message,
+  Notification,
+  Tag,
+  Tweet,
+  User
+} = require('./models');
 const nodeCron = require("node-cron");
 const nodecron = require('./utils/cleandb');
 const {getGoogleAuthURL,googleAuth} = require('./utils/google');
 require('dotenv').config();
 const app = express();
 const cors=require('cors');
-const Tag = require('./models/Tag');
-const Likes = require('./models/Likes');
-const Bookmarks = require('./models/Bookmark');
-const Follow = require('./models/Follow');
-const Chat = require('./models/Chat');
-const Message = require('./models/Message');
-const Chatrel = require('./models/Chatrel');
-const Notification = require('./models/Notification');
 app.use(cors({origin:true}));
 app.use(express.json());
 app.use(fileUpload({

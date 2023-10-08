@@ -1,4 +1,4 @@
-const Otp = require('../models/otpModel');
+const { Otp } = require('../models');
 const { Op } = require('sequelize');
 
 

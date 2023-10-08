@@ -1,5 +1,4 @@
-const User = require("../models/userModel");
-const Notification = require('../models/Notification');
+const { Notification, User } = require("../models");
 
 const mentions = async (usernamelist,tweetId,userId) => {
     try{

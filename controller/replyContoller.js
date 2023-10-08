@@ -1,5 +1,4 @@
-const Tweet = require('../models/tweetModel');
-const User = require('../models/userModel');
+const { Tweet, User } = require('../models');
 const cloudinary = require('cloudinary').v2;
 
 const create = async (req,res) => {

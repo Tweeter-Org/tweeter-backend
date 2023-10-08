@@ -1,6 +1,6 @@
 const {google} = require('googleapis');
 const axios = require('axios');
-const User = require('../models/userModel');
+const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 
 const oauth2Client = new google.auth.OAuth2(

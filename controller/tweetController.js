@@ -1,10 +1,6 @@
-const Tweet = require('../models/tweetModel');
-const User = require('../models/userModel');
+const { Bookmarks, Likes, Tag, Tweet, User } = require('../models');
 const { Op } = require('sequelize');
 const cloudinary = require('cloudinary').v2;
-const Likes = require('../models/Likes');
-const Bookmarks = require('../models/Bookmark');
-const Tag = require('../models/Tag');
 const notifs = require('../utils/notifs');
 
 const create = async (req,res) => {

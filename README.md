@@ -10,8 +10,8 @@
 - [Postman API documentation](#checkout-postman-api-documentation-here)
 - [Preview💻](#preview-)
 - [Running the server⚙️](#running-the-server-)
-- [🔖Steps to Contribute ✅](#🔖steps-to-contribute-)
-- [🔑Guidelines✨](#🔑guidelines)
+- [🔖Steps to Contribute ✅](#steps-to-contribute-)
+- [🔑Guidelines✨](#guidelines)
 - [Thanks to all the Contributors ❤️](#thanks-to-all-the-contributors-%EF%B8%8F)
 
 # About our project

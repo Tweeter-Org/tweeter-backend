@@ -9,7 +9,7 @@
 - [Backend Key Features ✨](#backend-key-features-)
 - [Postman API documentation](#checkout-postman-api-documentation-here)
 - [Preview💻](#preview-)
-- [Running the server⚙️](#running-the-server-)
+- [Running the server⚙️](#running-the-server-%EF%B8%8F)
 - [🔖Steps to Contribute ✅](#steps-to-contribute-)
 - [🔑Guidelines✨](#guidelines)
 - [Thanks to all the Contributors ❤️](#thanks-to-all-the-contributors-%EF%B8%8F)

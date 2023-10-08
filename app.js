@@ -23,6 +23,7 @@ const Chat = require('./models/Chat');
 const Message = require('./models/Message');
 const Chatrel = require('./models/Chatrel');
 const Notification = require('./models/Notification');
+const errorHandler = require('./middleware/error-handler');
 app.use(cors({origin:true}));
 app.use(express.json());
 app.use(fileUpload({
@@ -94,6 +95,7 @@ connectdb();
 
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
+app.use(errorHandler);
 
 app.get('/auth/google/url',(req,res)=>{
     return res.send(getGoogleAuthURL());

@@ -6,12 +6,12 @@
 
 - [About our project](#About-our-project)
 - [Tech Stack Used💡](#Tech-Stack-Used)
-- [Backend Key Features ✨](#backend-key-features-✨)
+- [Backend Key Features ✨](#backend-key-features-)
 - [Postman API documentation](#checkout-postman-api-documentation-here)
-- [Preview💻](#preview-💻)
-- [Running the server⚙️](#running-the-server-⚙️)
-- [🔖Steps to Contribute ✅](#🔖steps-to-contribute-✅)
-- [🔑Guidelines✨](#🔑guidelines✨)
+- [Preview💻](#preview-)
+- [Running the server⚙️](#running-the-server-)
+- [🔖Steps to Contribute ✅](#🔖steps-to-contribute-)
+- [🔑Guidelines✨](#🔑guidelines)
 - [Thanks to all the Contributors ❤️](#thanks-to-all-the-contributors-%EF%B8%8F)
 
 # About our project

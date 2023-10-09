@@ -53,7 +53,7 @@ https://github.com/alanansari/twitter_backend/assets/22475370/58907286-9f5b-459e
 
 1. Clone the repository: 
    ```CMD
-   git clone https://github.com/alanansari/twitter_backend.git
+   git clone https://github.com/[your-github-username]/tweeter-backend.git
    ```
 *To run the server, you need to have NodeJS installed on your machine. If you don't have it installed, you can follow the instructions [here](https://nodejs.org/en//) to install it.*
 

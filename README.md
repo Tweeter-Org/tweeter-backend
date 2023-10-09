@@ -62,6 +62,13 @@ https://github.com/alanansari/twitter_backend/assets/22475370/58907286-9f5b-459e
    PORT = 3000
    DATABASE_URL = ''
    jwtsecretkey1 = ''
+
+   PGDATABASE = ''
+   PGUSER = ''
+   PGPASSWORD = ''
+   PGHOST = ''
+   PGPORT = ''
+
    MAIL_ID = ''
    MAIL_PASS = ''
    GOOGLE_CLIENT_ID = ''

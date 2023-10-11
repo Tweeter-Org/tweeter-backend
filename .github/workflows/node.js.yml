@@ -2,7 +2,7 @@ name: tweeter-backend CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" , "sugan0tech/10"]
   pull_request:
     branches: [ "main" ]
 
@@ -22,6 +22,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm run build
-#    - run: npm ci
-#    - run: npm test
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Webpack Build
+      run: npm run build
+
+#    - name: Jest Test
+#      run : npm run test

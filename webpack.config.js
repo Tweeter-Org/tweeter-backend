@@ -18,6 +18,12 @@ module.exports = {
                         presets: ['@babel/preset-env']
                     }
                 }
+            },
+            {
+                test: /\.html$/,
+                use:{
+                    loader: "html-loader"
+                }
             }
         ]
     },

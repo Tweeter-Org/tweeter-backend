@@ -140,7 +140,7 @@ const everify = async (req,res) => {
         }
 
         // Generate a JWT token for the user and send it in the response
-        const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"1d"});
+        const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"10min"});
         if(user)
             return res.status(200).json({success:true,msg:'OTP Verified.',token});
         
@@ -233,9 +233,12 @@ const signup = async (req,res)=>{
         let madeuser = await User.findByPk(user._id,{
             attributes:['_id','name','user_name','displaypic']
         });
+
+        // Generate a JWT token for the user and send it in the response
+        const token = jwt.sign({_id:user._id},process.env.jwtsecretkey2,{expiresIn:"2d"});
         
         // Return a success response with a welcome message and user details
-        return res.status(200).json({success:true,msg:`Welcome to tweeter, ${user_name}!`,user:madeuser});
+        return res.status(200).json({success:true,msg:`Welcome to tweeter, ${user_name}!`,user:madeuser,token});
         
     } catch (err) {
         // Handle errors and return an error response
@@ -275,7 +278,7 @@ const login = async (req, res) => {
         if (!result) return res.status(400).json({sucess:false,msg:"Wrong Password"});
 
         // Generate a JSON Web Token (JWT) for authentication
-        const token = jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
+        const token = jwt.sign({_id:user._id},process.env.jwtsecretkey2,{expiresIn:"2d"});
 
         // Return a success response with the JWT and user details
         return res.status(200).json({sucess: true,msg:`Welcome back! ${user.user_name}`,token,user});
@@ -371,7 +374,7 @@ const fverify = async (req,res) => {
             return res.status(404).json({success:false,msg:'user not found by the given mail'});
 
         // Generate a JWT token for authentication
-        const token=jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"2d"});
+        const token=jwt.sign({_id:user._id},process.env.jwtsecretkey1,{expiresIn:"10min"});
 
         // Find the OTP entry in the database
         const sentotp = await Otp.findOne({

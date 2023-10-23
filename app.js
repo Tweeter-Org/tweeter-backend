@@ -40,23 +40,23 @@ cloudinary.config({
 Tweet.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
 User.hasMany(Tweet);
 
-Tweet.belongsToMany(User, { through: Likes });
+Tweet.belongsToMany(User, { through: Likes , onDelete:'CASCADE'});
 User.belongsToMany(Tweet, { through: Likes });
 
-Tweet.belongsToMany(User, { through: Bookmarks });
+Tweet.belongsToMany(User, { through: Bookmarks , onDelete:'CASCADE'});
 User.belongsToMany(Tweet, { through: Bookmarks });
 
-User.belongsToMany(User,{as:'follower',through: Follow});
+User.belongsToMany(User,{as:'follower',through: Follow,onDelete:'CASCADE'});
 
 Tweet.belongsTo(Tweet,{as:'retweet'});
 
 Tweet.belongsToMany(Tag,{through:'tweettag'});
-Tag.belongsToMany(Tweet,{through:'tweettag'});
+Tag.belongsToMany(Tweet,{through:'tweettag',onDelete:'CASCADE'});
 
 User.belongsToMany(Chat,{through: Chatrel});
-Chat.belongsToMany(User,{through: Chatrel});
+Chat.belongsToMany(User,{through: Chatrel, onDelete:'CASCADE'});
 
-Message.belongsTo(Chat);
+Message.belongsTo(Chat,{constraints:true,onDelete:'CASCADE'});
 Chat.hasMany(Message);
 
 Message.belongsTo(User);
@@ -64,9 +64,9 @@ User.hasMany(Message);
 
 Tweet.hasMany(Tweet,{sourceKey:'_id',foreignkey:'tweetId'});
 
-Message.belongsTo(Tweet);
+Message.belongsTo(Tweet,{constraints:true,onDelete:'CASCADE'});
 
-Notification.belongsTo(User);
+Notification.belongsTo(User,{constraints:true,onDelete:'CASCADE'});
 
 Notification.belongsTo(Tweet,{constraints:true,onDelete:'CASCADE'});
 

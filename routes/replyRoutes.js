@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { replyController } = require('../controller');
-const authverifytoken = require('../middleware/authveriftoken');
+const {auth2} = require('../middleware/authveriftoken');
 
-router.get('/tweetreplies/:id', authverifytoken, replyController.gettweetreplies);
-router.post('/create', authverifytoken, replyController.create);
+router.get('/tweetreplies/:id', auth2, replyController.gettweetreplies);
+router.post('/create', auth2, replyController.create);
 
 module.exports = router;
